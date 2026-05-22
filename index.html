@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gowtham Rajendran — AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080808;
+  --bg2: #0f0f0f;
+  --bg3: #161616;
+  --surface: #1a1a1a;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --gold: #c9a84c;
+  --gold2: #e8c870;
+  --gold-dim: rgba(201,168,76,0.15);
+  --gold-glow: rgba(201,168,76,0.06);
+  --text: #e8e4dd;
+  --text2: #a09890;
+  --text3: #5a5550;
+  --red: #c84b4b;
+  --teal: #4b9cc8;
+  --green: #4bc87a;
+  --ff-display: 'Bebas Neue', sans-serif;
+  --ff-serif: 'Cormorant Garamond', serif;
+  --ff-mono: 'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--ff-mono);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+::selection { background: var(--gold-dim); color: var(--gold2); }
+
+/* ── CURSOR ─────────────────────────── */
+#cursor {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  transition: transform 0.15s, background 0.2s;
+  transform: translate(-50%, -50%);
+}
+#cursor-ring {
+  position: fixed; top: 0; left: 0; z-index: 9998;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s linear, width 0.2s, height 0.2s, opacity 0.2s;
+}
+body.hovering #cursor { transform: translate(-50%,-50%) scale(2.5); background: var(--gold2); }
+body.hovering #cursor-ring { width: 48px; height: 48px; opacity: 0.4; }
+
+/* ── CANVAS ─────────────────────────── */
+#canvas {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ── LAYOUT ─────────────────────────── */
+.page { position: relative; z-index: 1; }
+
+/* ── NAV ─────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 48px;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
+}
+nav.scrolled {
+  border-color: var(--border);
+  background: rgba(8,8,8,0.85);
+  backdrop-filter: blur(12px);
+}
+.nav-logo {
+  font-family: var(--ff-display);
+  font-size: 22px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-status {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; color: var(--text2);
+  letter-spacing: 0.1em;
+}
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ── HERO ─────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px 48px 80px;
+  position: relative;
+}
+.hero-eyebrow {
+  font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 24px;
+  display: flex; align-items: center; gap: 16px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 0.3s forwards;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block; width: 40px; height: 1px;
+  background: var(--gold);
+}
+.hero-name {
+  font-family: var(--ff-display);
+  font-size: clamp(80px, 12vw, 160px);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  opacity: 0; transform: translateY(30px);
+  animation: fadeUp 0.9s 0.5s forwards;
+}
+.hero-name .accent { color: var(--gold); }
+.hero-title {
+  font-family: var(--ff-serif);
+  font-size: clamp(22px, 3vw, 36px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text2);
+  margin-top: 20px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 0.7s forwards;
+}
+.hero-desc {
+  max-width: 520px;
+  margin-top: 32px;
+  color: var(--text2);
+  line-height: 1.8;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 0.9s forwards;
+}
+.hero-metrics {
+  display: flex; gap: 48px;
+  margin-top: 64px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 1.1s forwards;
+}
+.metric-item { display: flex; flex-direction: column; gap: 4px; }
+.metric-num {
+  font-family: var(--ff-display);
+  font-size: 42px;
+  color: var(--gold);
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+.metric-label {
+  font-size: 10px; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--text3);
+}
+.metric-div {
+  width: 1px; height: 60px; background: var(--border2);
+  align-self: center;
+}
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 48px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--text3);
+  opacity: 0; animation: fadeUp 0.8s 1.5s forwards;
+}
+.scroll-line {
+  width: 60px; height: 1px; background: var(--text3);
+  position: relative; overflow: hidden;
+}
+.scroll-line::after {
+  content: ''; position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%; background: var(--gold);
+  animation: scrollLine 2s 2s infinite;
+}
+@keyframes scrollLine { 0%{left:-100%} 100%{left:100%} }
+@keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+/* ── SECTION COMMON ───────────────── */
+section { padding: 120px 48px; position: relative; }
+.section-label {
+  display: flex; align-items: center; gap: 16px;
+  font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 64px;
+}
+.section-label::before {
+  content: attr(data-num);
+  font-family: var(--ff-display);
+  font-size: 11px; color: var(--text3);
+}
+.section-label::after {
+  content: ''; flex: 1; max-width: 80px;
+  height: 1px; background: var(--border2);
+}
+.section-title {
+  font-family: var(--ff-display);
+  font-size: clamp(48px, 7vw, 96px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  margin-bottom: 64px;
+}
+
+/* ── REVEAL ANIMATION ─────────────── */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ── ABOUT ────────────────────────── */
+#about { background: var(--bg2); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.about-body {
+  font-family: var(--ff-serif);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--text2);
+}
+.about-body em { color: var(--text); font-style: italic; }
+.about-body .gold { color: var(--gold); font-style: normal; }
+.about-stack { display: flex; flex-direction: column; gap: 24px; }
+.stack-group { }
+.stack-label {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.stack-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  padding: 4px 10px;
+  border: 1px solid var(--border2);
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 0.05em;
+  transition: border-color 0.2s, color 0.2s;
+}
+.tag:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── EXPERIENCE ───────────────────── */
+#experience { }
+.exp-list { display: flex; flex-direction: column; }
+.exp-item {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+  transition: background 0.3s;
+  position: relative;
+}
+.exp-item::before {
+  content: '';
+  position: absolute; left: -48px; top: 0; bottom: 0; width: 0;
+  background: var(--gold-glow);
+  transition: width 0.4s;
+}
+.exp-item:hover::before { width: calc(100% + 96px); }
+.exp-meta { }
+.exp-period {
+  font-size: 11px; letter-spacing: 0.15em;
+  color: var(--gold); margin-bottom: 8px;
+}
+.exp-company {
+  font-family: var(--ff-serif);
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--text); line-height: 1.2;
+}
+.exp-loc {
+  font-size: 11px; color: var(--text3);
+  margin-top: 4px; letter-spacing: 0.05em;
+}
+.exp-content { }
+.exp-role {
+  font-family: var(--ff-display);
+  font-size: 28px;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.exp-desc {
+  color: var(--text2);
+  line-height: 1.8;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+.exp-bullets {
+  list-style: none;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.exp-bullets li {
+  color: var(--text2);
+  font-size: 13px;
+  line-height: 1.7;
+  padding-left: 16px;
+  position: relative;
+}
+.exp-bullets li::before {
+  content: '—';
+  position: absolute; left: 0;
+  color: var(--gold);
+  font-size: 11px;
+}
+.exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.exp-tag {
+  font-size: 10px; letter-spacing: 0.15em;
+  color: var(--gold); padding: 2px 8px;
+  border: 1px solid var(--gold-dim);
+}
+
+/* ── PROJECTS ─────────────────────── */
+#projects { background: var(--bg2); }
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+.project-card {
+  background: var(--bg3);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.project-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+.project-card:hover { background: var(--surface); }
+.project-card:hover::before { transform: scaleX(1); }
+.project-num {
+  font-family: var(--ff-display);
+  font-size: 64px;
+  color: var(--border2);
+  line-height: 1;
+  position: absolute; top: 20px; right: 24px;
+  transition: color 0.3s;
+}
+.project-card:hover .project-num { color: var(--gold-dim); }
+.project-category {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px;
+}
+.project-name {
+  font-family: var(--ff-display);
+  font-size: 30px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.project-desc {
+  color: var(--text2);
+  font-size: 12px; line-height: 1.7;
+  margin-bottom: 24px;
+}
+.project-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.project-tech span {
+  font-size: 10px; color: var(--text3);
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  letter-spacing: 0.1em;
+}
+.project-insights { border-top: 1px solid var(--border); padding-top: 16px; }
+.insight-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 6px 0;
+}
+.insight-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; }
+.insight-val { font-size: 11px; color: var(--gold); letter-spacing: 0.08em; }
+.project-card-wide {
+  grid-column: 1 / -1;
+}
+.project-card-wide .project-name { font-size: 40px; }
+.project-card-wide-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+}
+
+/* ── EDUCATION ────────────────────── */
+#education { }
+.edu-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+}
+.edu-card {
+  background: var(--bg3);
+  padding: 48px;
+  border-top: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+.edu-card:hover { border-color: var(--gold); }
+.edu-year {
+  font-family: var(--ff-display); font-size: 80px;
+  color: var(--border2); line-height: 1;
+  margin-bottom: 24px;
+}
+.edu-degree {
+  font-family: var(--ff-serif);
+  font-size: 24px; font-weight: 300;
+  color: var(--text); line-height: 1.3;
+  margin-bottom: 8px;
+}
+.edu-school {
+  font-size: 12px; letter-spacing: 0.15em;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.edu-detail { color: var(--text2); font-size: 12px; line-height: 1.7; }
+
+/* ── SKILLS MATRIX ────────────────── */
+#skills { background: var(--bg2); }
+.skills-matrix {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+}
+.skill-block {
+  background: var(--bg3);
+  padding: 32px;
+  transition: background 0.3s;
+}
+.skill-block:hover { background: var(--surface); }
+.skill-block-title {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 20px;
+}
+.skill-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.skill-item:last-child { border-bottom: none; }
+.skill-name { font-size: 12px; color: var(--text2); }
+.skill-bar-wrap { width: 60px; height: 2px; background: var(--border2); }
+.skill-bar { height: 100%; background: var(--gold); transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+
+/* ── CONTACT ──────────────────────── */
+#contact {
+  min-height: 50vh;
+  display: flex; flex-direction: column; justify-content: center;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.contact-title {
+  font-family: var(--ff-display);
+  font-size: clamp(60px, 10vw, 140px);
+  line-height: 0.9;
+  color: var(--text);
+  margin-bottom: 48px;
+}
+.contact-title .line2 { color: var(--gold); }
+.contact-links { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+.contact-link {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--text2);
+  transition: color 0.2s;
+}
+.contact-link:hover { color: var(--gold); }
+.contact-link-label {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+}
+.contact-link-val { font-family: var(--ff-serif); font-size: 18px; font-style: italic; }
+
+/* ── TICKER ───────────────────────── */
+.ticker {
+  background: var(--bg3);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ticker-inner {
+  display: inline-flex; gap: 48px;
+  animation: ticker 30s linear infinite;
+}
+.ticker-item {
+  display: flex; align-items: center; gap: 16px;
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text3);
+}
+.ticker-item .gold { color: var(--gold); }
+.ticker-sep { color: var(--border2); }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── FOOTER ───────────────────────── */
+footer {
+  padding: 32px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border);
+}
+.footer-copy { font-size: 11px; color: var(--text3); letter-spacing: 0.1em; }
+.footer-right { font-size: 11px; color: var(--text3); }
+.footer-right .gold { color: var(--gold); }
+
+/* ── SCROLLBAR ────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ── HOVER CLASS ────────────────────── */
+a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-link {
+  transition-property: color, background, border-color, transform;
+  transition-duration: 0.2s;
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<canvas id="canvas"></canvas>
+
+<nav id="nav">
+  <a class="nav-logo" href="#">GR</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-status">
+    <span class="status-dot"></span>
+    <span>Available · India</span>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ── HERO ───────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-eyebrow">Software Engineer · AI / ML Engineer</div>
+  <div class="hero-name">GOWTHAM<br><span class="accent">RAJENDRAN</span></div>
+  <div class="hero-title">Engineering systems that think.</div>
+  <p class="hero-desc">MSc Advanced Computer Science · University of Strathclyde, UK.<br>
+  Building production-grade distributed backends, real-time data pipelines, and intelligent ML systems — with a bias for measurable impact and architectural depth.</p>
+  <div class="hero-metrics">
+    <div class="metric-item">
+      <div class="metric-num counter" data-target="5">0</div>
+      <div class="metric-label">Years Experience</div>
+    </div>
+    <div class="metric-div"></div>
+    <div class="metric-item">
+      <div class="metric-num counter" data-target="10">0</div>
+      <div class="metric-label">Major Projects</div>
+    </div>
+    <div class="metric-div"></div>
+    <div class="metric-item">
+      <div class="metric-num counter" data-target="150">0</div>
+      <div class="metric-label">LeetCode Solved</div>
+    </div>
+    <div class="metric-div"></div>
+    <div class="metric-item">
+      <div class="metric-num counter" data-target="25">0</div>
+      <div class="metric-label">% Avg Perf. Gain</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- ── TICKER ─────────────────────────────────── -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker-inner">
+    <div class="ticker-item"><span class="gold">Python</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">Spring Boot<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">Apache Kafka</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">Distributed Systems<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">Apache Spark</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">PostgreSQL<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">Redis</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">MLflow<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">Kubernetes</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">Docker · Terraform<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">FAISS</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">XGBoost · SHAP<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">OpenTelemetry</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">Spark Streaming<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">150+ LeetCode</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">System Design<span class="ticker-sep">·</span></div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item"><span class="gold">Python</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">Spring Boot<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">Apache Kafka</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">Distributed Systems<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">Apache Spark</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">PostgreSQL<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">Redis</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">MLflow<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">Kubernetes</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">Docker · Terraform<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">FAISS</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">XGBoost · SHAP<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">OpenTelemetry</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">Spark Streaming<span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">150+ LeetCode</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item">System Design<span class="ticker-sep">·</span></div>
+  </div>
+</div>
+
+<!-- ── ABOUT ──────────────────────────────────── -->
+<section id="about">
+  <div class="section-label" data-num="00">About</div>
+  <div class="about-grid">
+    <div class="about-body reveal">
+      <p>I'm a software engineer who moves comfortably between <em>distributed backend systems</em> and <em>production ML infrastructure</em>. My foundation is a <span class="gold">Master's in Advanced Computer Science</span> from the University of Strathclyde, UK — with a specialisation in data science and machine learning.</p>
+      <br>
+      <p>I've built systems that <em>process millions of records daily</em>, <em>cut p99 latency by 20%</em>, and <em>handle real-time event-driven pipelines</em> with exactly-once semantics. I believe the highest-leverage engineers are those who understand the full stack — from algorithm design to deployment architecture.</p>
+      <br>
+      <p>Currently based in <span class="gold">Coimbatore, India</span>, targeting senior SWE and ML Engineering roles at product-led companies.</p>
+    </div>
+    <div class="about-stack reveal reveal-delay-2">
+      <div class="stack-group">
+        <div class="stack-label">Core ML</div>
+        <div class="stack-tags">
+          <span class="tag">Scikit-learn</span><span class="tag">TensorFlow</span><span class="tag">XGBoost</span>
+          <span class="tag">BERT</span><span class="tag">FAISS</span><span class="tag">SHAP</span>
+          <span class="tag">A/B Testing</span><span class="tag">Feature Engineering</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-label">Backend & Infrastructure</div>
+        <div class="stack-tags">
+          <span class="tag">Spring Boot</span><span class="tag">Flask</span><span class="tag">Redis</span>
+          <span class="tag">Kafka</span><span class="tag">PostgreSQL</span><span class="tag">MongoDB</span>
+          <span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">Terraform</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-label">Languages</div>
+        <div class="stack-tags">
+          <span class="tag">Python</span><span class="tag">Java</span><span class="tag">SQL</span>
+          <span class="tag">Bash</span><span class="tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-label">Data Engineering</div>
+        <div class="stack-tags">
+          <span class="tag">Apache Spark</span><span class="tag">Hadoop</span>
+          <span class="tag">ClickHouse</span><span class="tag">ETL/ELT</span><span class="tag">Parquet</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-label">Observability</div>
+        <div class="stack-tags">
+          <span class="tag">Prometheus</span><span class="tag">Grafana</span>
+          <span class="tag">OpenTelemetry</span><span class="tag">Structured Logging</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ─────────────────────────────── -->
+<section id="experience">
+  <div class="section-label" data-num="01">Experience</div>
+  <div class="section-title reveal">WORK<br>HISTORY</div>
+  <div class="exp-list">
+
+    <!-- Nitro Solutions -->
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-period">Sep 2024 — Present</div>
+        <div class="exp-company">Nitro Solutions</div>
+        <div class="exp-loc">Paisley, UK</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Software Development Engineer</div>
+        <ul class="exp-bullets">
+          <li>Owned backend system design for two production retail platforms (Racetrack Pitstop, Tubbees) — making decisions around service boundaries, API contracts, and data consistency models under concurrent traffic.</li>
+          <li>Diagnosed and resolved p99 latency spikes by profiling query execution plans: eliminated N+1 patterns, added composite indexes on hot-path joins, and introduced Redis caching for catalogue reads — reducing p99 latency by ~20% without schema changes.</li>
+          <li>Designed ingestion pipeline (event capture → validation → transformation → storage) with idempotent writes and retry-safe consumers, reducing data inconsistencies by 30%.</li>
+          <li>Introduced API contract testing between backend and frontend teams, reducing integration regressions and improving release predictability across services.</li>
+        </ul>
+        <div class="exp-tags">
+          <span class="exp-tag">Spring Boot</span><span class="exp-tag">Python</span>
+          <span class="exp-tag">PostgreSQL</span><span class="exp-tag">Redis</span>
+          <span class="exp-tag">Distributed Systems</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRG -->
+    <div class="exp-item reveal reveal-delay-1">
+      <div class="exp-meta">
+        <div class="exp-period">2023 — 2024</div>
+        <div class="exp-company">DRG</div>
+        <div class="exp-loc">Glasgow, UK</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Junior Data Engineer</div>
+        <ul class="exp-bullets">
+          <li>Designed and owned production Spark pipelines processing millions of records daily. Identified partition skew as the primary bottleneck through Spark UI profiling — repartitioned on high-cardinality keys and applied salting, cutting average job runtime by over 25%.</li>
+          <li>Built automated data-quality gates (schema validation, null-rate checks, referential integrity) as a pipeline stage, preventing bad data from propagating to analytics consumers and eliminating the manual remediation cycle entirely.</li>
+          <li>Implemented pipeline observability dashboards (SLA tracking, error rates, freshness metrics), significantly reducing incident diagnosis time.</li>
+        </ul>
+        <div class="exp-tags">
+          <span class="exp-tag">Apache Spark</span><span class="exp-tag">Hadoop</span>
+          <span class="exp-tag">ETL/ELT</span><span class="exp-tag">Grafana</span>
+          <span class="exp-tag">Pipeline Observability</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modern Infotech -->
+    <div class="exp-item reveal reveal-delay-2">
+      <div class="exp-meta">
+        <div class="exp-period">Nov 2021 — Jul 2022</div>
+        <div class="exp-company">Modern Infotech Data Services</div>
+        <div class="exp-loc">Chennai, India</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Machine Learning Intern</div>
+        <ul class="exp-bullets">
+          <li>Addressed the cold-start problem using a hybrid collaborative + content-based filtering approach, blending signals via a learned weighting layer — lifting new-user recommendation CTR by 25%.</li>
+          <li>A/B tested new search ranking signals (query-document co-occurrence, recency decay) against the production baseline, achieving a 15% NDCG improvement and establishing the offline evaluation framework adopted as team standard.</li>
+          <li>Fine-tuned a BERT-based intent classifier with task-specific data augmentation, raising classification accuracy by 20% and reducing virtual assistant fallback rate significantly.</li>
+        </ul>
+        <div class="exp-tags">
+          <span class="exp-tag">TensorFlow</span><span class="exp-tag">BERT</span>
+          <span class="exp-tag">Collaborative Filtering</span>
+          <span class="exp-tag">NLP</span><span class="exp-tag">A/B Testing</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── PROJECTS ────────────────────────────────── -->
+<section id="projects">
+  <div class="section-label" data-num="02">Projects</div>
+  <div class="section-title reveal">SELECTED<br>WORK</div>
+
+  <div class="projects-grid">
+
+    <div class="project-card project-card-wide reveal" onclick="window.open('https://github.com/gowtham-rajendran/distributed-order-processing','_blank')">
+      <div class="project-num">01</div>
+      <div class="project-card-wide-inner">
+        <div>
+          <div class="project-category">System Design · Distributed Systems</div>
+          <div class="project-name">Distributed Order<br>Processing System</div>
+          <p class="project-desc">High-traffic e-commerce order processing using Kafka-based async execution to decouple order placement from inventory updates. Idempotency-key deduplication via Redis prevents duplicate orders under retries and network failures.</p>
+        </div>
+        <div>
+          <div class="project-tech">
+            <span>Kafka</span><span>Redis</span><span>Python</span><span>FastAPI</span><span>Docker</span>
+          </div>
+          <div class="project-insights">
+            <div class="insight-row"><span class="insight-label">Deduplication</span><span class="insight-val">Redis idempotency keys</span></div>
+            <div class="insight-row"><span class="insight-label">Semantics</span><span class="insight-val">At-least-once + safe reprocessing</span></div>
+            <div class="insight-row"><span class="insight-label">Fault tolerance</span><span class="insight-val">Dead-letter queue + retry pipeline</span></div>
+            <div class="insight-row"><span class="insight-label">Throughput</span><span class="insight-val">Async event-driven execution</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal" onclick="window.open('https://github.com/gowtham-rajendran/distributed-url-shortener','_blank')">
+      <div class="project-num">02</div>
+      <div class="project-category">System Design · Backend</div>
+      <div class="project-name">Distributed URL<br>Shortener</div>
+      <p class="project-desc">Production-grade URL shortening service with horizontal scalability. Token bucket rate limiting, Redis write-through cache, Base62 ID generation, async analytics via Kafka.</p>
+      <div class="project-tech">
+        <span>FastAPI</span><span>Redis</span><span>PostgreSQL</span><span>Kafka</span><span>Docker</span>
+      </div>
+      <div class="project-insights">
+        <div class="insight-row"><span class="insight-label">Latency target</span><span class="insight-val">sub-10ms p99</span></div>
+        <div class="insight-row"><span class="insight-label">Scale</span><span class="insight-val">100K+ redirects/day</span></div>
+        <div class="insight-row"><span class="insight-label">Key design</span><span class="insight-val">Base62 counter + cache-aside</span></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham-rajendran/ml-feature-store','_blank')">
+      <div class="project-num">03</div>
+      <div class="project-category">MLOps · Data Engineering</div>
+      <div class="project-name">Real-Time ML<br>Feature Store</div>
+      <p class="project-desc">Dual-store architecture: Redis online store for &lt;5ms inference, S3+Parquet offline store for batch training. Feature registry with semantic versioning and point-in-time join support.</p>
+      <div class="project-tech">
+        <span>Redis</span><span>Parquet</span><span>FastAPI</span><span>S3</span><span>Python</span>
+      </div>
+      <div class="project-insights">
+        <div class="insight-row"><span class="insight-label">Online latency</span><span class="insight-val">&lt;5ms</span></div>
+        <div class="insight-row"><span class="insight-label">Key design</span><span class="insight-val">Dual-store + PIT joins</span></div>
+        <div class="insight-row"><span class="insight-label">Pattern</span><span class="insight-val">Write-through + pipeline batch</span></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham-rajendran/semantic-search-engine','_blank')">
+      <div class="project-num">04</div>
+      <div class="project-category">AI · NLP</div>
+      <div class="project-name">Semantic Search<br>Engine</div>
+      <p class="project-desc">Meaning-aware search using sentence embeddings + FAISS ANN index. Understands synonyms and context that keyword search misses. Hybrid BM25+semantic scoring via Reciprocal Rank Fusion.</p>
+      <div class="project-tech">
+        <span>FAISS</span><span>sentence-transformers</span><span>FastAPI</span><span>BM25</span>
+      </div>
+      <div class="project-insights">
+        <div class="insight-row"><span class="insight-label">Model</span><span class="insight-val">all-MiniLM-L6-v2 (384-dim)</span></div>
+        <div class="insight-row"><span class="insight-label">Index</span><span class="insight-val">FAISS IVF (ANN)</span></div>
+        <div class="insight-row"><span class="insight-label">Ranking</span><span class="insight-val">RRF hybrid fusion</span></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal reveal-delay-3" onclick="window.open('https://github.com/gowtham-rajendran/fraud-detection','_blank')">
+      <div class="project-num">05</div>
+      <div class="project-category">ML · Streaming</div>
+      <div class="project-name">Real-Time Fraud<br>Detection</div>
+      <p class="project-desc">Three-layer decision system: rule engine (&lt;1ms) → XGBoost ML scorer → SHAP explainer. Velocity tracking, impossible-travel detection, and per-transaction explainability for regulatory compliance.</p>
+      <div class="project-tech">
+        <span>XGBoost</span><span>SHAP</span><span>Redis</span><span>Kafka</span><span>FastAPI</span>
+      </div>
+      <div class="project-insights">
+        <div class="insight-row"><span class="insight-label">Scoring latency</span><span class="insight-val">&lt;100ms</span></div>
+        <div class="insight-row"><span class="insight-label">Architecture</span><span class="insight-val">Rules → ML → SHAP</span></div>
+        <div class="insight-row"><span class="insight-label">Explainability</span><span class="insight-val">Per-transaction SHAP</span></div>
+      </div>
+    </div>
+
+    <div class="project-card project-card-wide reveal" onclick="window.open('https://github.com/gowtham-rajendran/log-analytics-pipeline','_blank')">
+      <div class="project-num">06</div>
+      <div class="project-card-wide-inner">
+        <div>
+          <div class="project-category">Data Engineering · Infrastructure</div>
+          <div class="project-name">Log Analytics<br>Pipeline</div>
+          <p class="project-desc">End-to-end real-time log ingestion processing 1M+ events/day. Kafka → Spark Structured Streaming → ClickHouse OLAP with windowed aggregations, dead letter queue handling, and Grafana dashboards.</p>
+        </div>
+        <div>
+          <div class="project-tech">
+            <span>Kafka</span><span>Spark</span><span>ClickHouse</span><span>Grafana</span><span>Python</span>
+          </div>
+          <div class="project-insights">
+            <div class="insight-row"><span class="insight-label">Throughput</span><span class="insight-val">1M+ events/day</span></div>
+            <div class="insight-row"><span class="insight-label">Semantics</span><span class="insight-val">Exactly-once (Spark+Kafka)</span></div>
+            <div class="insight-row"><span class="insight-label">Storage</span><span class="insight-val">ClickHouse columnar OLAP</span></div>
+            <div class="insight-row"><span class="insight-label">Windows</span><span class="insight-val">5-min sliding, 2-min watermark</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham-rajendran/rate-limiter-service','_blank')">
+      <div class="project-num">07</div>
+      <div class="project-category">Backend · System Design</div>
+      <div class="project-name">Rate Limiter<br>as a Service</div>
+      <p class="project-desc">Four distributed rate limiting algorithms backed by Redis Lua scripts for atomicity. Token bucket, sliding window log, sliding window counter, fixed window — all deployable as middleware.</p>
+      <div class="project-tech">
+        <span>Redis Lua</span><span>FastAPI</span><span>Docker</span>
+      </div>
+      <div class="project-insights">
+        <div class="insight-row"><span class="insight-label">Algorithms</span><span class="insight-val">4 (token bucket + 3 more)</span></div>
+        <div class="insight-row"><span class="insight-label">Atomicity</span><span class="insight-val">Redis Lua scripts</span></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham-rajendran/automl-pipeline','_blank')">
+      <div class="project-num">08</div>
+      <div class="project-category">MLOps · Automation</div>
+      <div class="project-name">AutoML<br>Pipeline</div>
+      <p class="project-desc">End-to-end automated ML: data validation → feature engineering → Bayesian HPO (Optuna) → training → SHAP evaluation → MLflow registry. 3x more efficient than grid search.</p>
+      <div class="project-tech">
+        <span>Optuna</span><span>MLflow</span><span>SHAP</span><span>Scikit-learn</span>
+      </div>
+      <div class="project-insights">
+        <div class="insight-row"><span class="insight-label">Search</span><span class="insight-val">Bayesian (TPE, Optuna)</span></div>
+        <div class="insight-row"><span class="insight-label">Registry</span><span class="insight-val">MLflow (versioned)</span></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham-rajendran/recommendation-engine','_blank')">
+      <div class="project-num">09</div>
+      <div class="project-category">ML · Product</div>
+      <div class="project-name">Recommendation<br>Engine</div>
+      <p class="project-desc">Hybrid collaborative + content-based engine with A/B testing framework. Deterministic user-to-variant assignment via MD5 hash, ALS matrix factorisation, cold-start handling.</p>
+      <div class="project-tech">
+        <span>scipy SVD</span><span>Redis</span><span>FastAPI</span><span>NumPy</span>
+      </div>
+      <div class="project-insights">
+        <div class="insight-row"><span class="insight-label">Algorithm</span><span class="insight-val">ALS + content hybrid</span></div>
+        <div class="insight-row"><span class="insight-label">A/B testing</span><span class="insight-val">Deterministic hash assignment</span></div>
+      </div>
+    </div>
+
+    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham-rajendran/observability-platform','_blank')">
+      <div class="project-num">10</div>
+      <div class="project-category">Infrastructure · DevOps</div>
+      <div class="project-name">Observability<br>Platform</div>
+      <p class="project-desc">Three pillars of observability in one: metrics (counters/gauges/histograms), distributed traces (OpenTelemetry spans), and multi-window alerting with severity-based routing.</p>
+      <div class="project-tech">
+        <span>OpenTelemetry</span><span>FastAPI</span><span>TimescaleDB</span><span>Python</span>
+      </div>
+      <div class="project-insights">
+        <div class="insight-row"><span class="insight-label">Pillars</span><span class="insight-val">Metrics · Traces · Alerts</span></div>
+        <div class="insight-row"><span class="insight-label">Alerting</span><span class="insight-val">Multi-window, sustained</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── EDUCATION ──────────────────────────────── -->
+<section id="education">
+  <div class="section-label" data-num="03">Education</div>
+  <div class="section-title reveal">ACADEMIC<br>FOUNDATION</div>
+  <div class="edu-grid">
+    <div class="edu-card reveal">
+      <div class="edu-year">2024</div>
+      <div class="edu-degree">MSc Advanced Computer Science<br>with Data Science</div>
+      <div class="edu-school">University of Strathclyde · Glasgow, Scotland, UK</div>
+      <p class="edu-detail">Distributed Systems · Machine Learning & AI · Big Data Analytics · Cloud Computing · Database Systems · Advanced Data Structures & Algorithms · Software Engineering Practices</p>
+    </div>
+    <div class="edu-card reveal reveal-delay-2">
+      <div class="edu-year">2022</div>
+      <div class="edu-degree">BE Electrical, Electronics &<br>Communications Engineering</div>
+      <div class="edu-school">Coimbatore Institute of Technology · India</div>
+      <p class="edu-detail">Data Structures & Algorithms · Operating Systems · Computer Networks · Database Management · Software Engineering · Web Development</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ─────────────────────────────────── -->
+<section id="skills">
+  <div class="section-label" data-num="04">Skills</div>
+  <div class="skills-matrix">
+    <div class="skill-block reveal">
+      <div class="skill-block-title">Machine Learning</div>
+      <div class="skill-item"><span class="skill-name">Scikit-learn</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="92" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">TensorFlow</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">XGBoost</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">BERT / NLP</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">A/B Testing</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+    </div>
+    <div class="skill-block reveal reveal-delay-1">
+      <div class="skill-block-title">Backend Engineering</div>
+      <div class="skill-item"><span class="skill-name">Spring Boot</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Flask / FastAPI</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="90" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Redis</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">PostgreSQL</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="86" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Kafka</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+    </div>
+    <div class="skill-block reveal reveal-delay-2">
+      <div class="skill-block-title">Data Engineering</div>
+      <div class="skill-item"><span class="skill-name">Apache Spark</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Hadoop</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="80" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">ETL / ELT</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">ClickHouse</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="78" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Prometheus/Grafana</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82" style="width:0%"></div></div></div>
+    </div>
+    <div class="skill-block reveal reveal-delay-3">
+      <div class="skill-block-title">Infrastructure & DSA</div>
+      <div class="skill-item"><span class="skill-name">Docker</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="90" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Kubernetes</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="78" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Terraform / CI/CD</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="80" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Python</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="95" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">LeetCode (150+)</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ─────────────────────────────────── -->
+<section id="contact">
+  <div class="contact-title reveal">
+    LET'S<br><span class="line2">BUILD</span><br>TOGETHER
+  </div>
+  <div class="contact-links reveal reveal-delay-2">
+    <a class="contact-link" href="mailto:gowtham27raja@gmail.com">
+      <span class="contact-link-label">Email</span>
+      <span class="contact-link-val">gowtham27raja@gmail.com</span>
+    </a>
+    <a class="contact-link" href="https://www.linkedin.com/in/gowtham-rajendran-ai" target="_blank">
+      <span class="contact-link-label">LinkedIn</span>
+      <span class="contact-link-val">gowtham-rajendran-ai</span>
+    </a>
+    <a class="contact-link" href="https://github.com/gowtham-rajendran" target="_blank">
+      <span class="contact-link-label">GitHub</span>
+      <span class="contact-link-val">gowtham-rajendran</span>
+    </a>
+    <a class="contact-link" href="tel:+919629881914">
+      <span class="contact-link-label">Phone</span>
+      <span class="contact-link-val">+91 96298 81914</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2025 Gowtham Rajendran</div>
+  <div class="footer-right">Designed & coded from scratch · <span class="gold">Coimbatore, India</span></div>
+</footer>
+
+</div><!-- .page -->
+
+<script>
+/* ── CURSOR ──────────────────────── */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function loop(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
+document.querySelectorAll('a,button,.project-card,.tag,.exp-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+});
+
+/* ── NAV SCROLL ───────────────────── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll',()=>{ nav.classList.toggle('scrolled', window.scrollY > 60); });
+
+/* ── CANVAS PARTICLES ─────────────── */
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+class Particle {
+  constructor(){
+    this.x=Math.random()*W; this.y=Math.random()*H;
+    this.vx=(Math.random()-0.5)*0.3; this.vy=(Math.random()-0.5)*0.3;
+    this.r=Math.random()*1.2+0.3;
+    this.alpha=Math.random()*0.5+0.1;
+  }
+  update(){ this.x+=this.vx; this.y+=this.vy;
+    if(this.x<0)this.x=W; if(this.x>W)this.x=0;
+    if(this.y<0)this.y=H; if(this.y>H)this.y=0;
+  }
+  draw(){
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(201,168,76,${this.alpha})`; ctx.fill();
+  }
+}
+for(let i=0;i<120;i++) particles.push(new Particle());
+const LINK_DIST=120;
+function animCanvas(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<particles.length;i++){
+    particles[i].update(); particles[i].draw();
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<LINK_DIST){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`rgba(201,168,76,${0.12*(1-d/LINK_DIST)})`;
+        ctx.lineWidth=0.5; ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animCanvas);
+}
+animCanvas();
+
+/* ── REVEAL ON SCROLL ─────────────── */
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.12});
+reveals.forEach(el=>obs.observe(el));
+
+/* ── COUNTER ANIMATION ─────────────── */
+const counters = document.querySelectorAll('.counter');
+const counterObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el=e.target, target=+el.dataset.target;
+      const step = target/60;
+      let current=0;
+      const t=setInterval(()=>{
+        current+=step; if(current>=target){ el.textContent=target; clearInterval(t); return; }
+        el.textContent=Math.floor(current);
+      },16);
+      counterObs.unobserve(el);
+    }
+  });
+},{threshold:0.5});
+counters.forEach(el=>counterObs.observe(el));
+
+/* ── SKILL BARS ───────────────────── */
+const bars = document.querySelectorAll('.skill-bar');
+const barObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.width = e.target.dataset.w+'%';
+      barObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+bars.forEach(b=>barObs.observe(b));
+
+/* ── SMOOTH ANCHOR ─────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
