@@ -1,3 +1,4 @@
+cat > /home/claude/portfolio.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -160,12 +161,25 @@ nav.scrolled {
   animation: fadeUp 0.8s 0.7s forwards;
 }
 .hero-desc {
-  max-width: 520px;
+  max-width: 620px;
   margin-top: 32px;
   color: var(--text2);
-  line-height: 1.8;
+  line-height: 1.9;
   opacity: 0; transform: translateY(20px);
   animation: fadeUp 0.8s 0.9s forwards;
+  font-size: 13px;
+}
+.hero-desc p + p { margin-top: 14px; }
+.hero-desc .highlight { color: var(--gold); }
+.hero-desc .em { color: var(--text); font-style: italic; }
+.hero-cta {
+  margin-top: 20px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--text3);
+  font-style: italic;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 1.05s forwards;
 }
 .hero-metrics {
   display: flex; gap: 48px;
@@ -355,8 +369,94 @@ section { padding: 120px 48px; position: relative; }
   border: 1px solid var(--gold-dim);
 }
 
+/* ── EARLY EXP COMBINED ──────────── */
+.exp-item.early-combined .exp-role {
+  font-size: 22px;
+  letter-spacing: 0.04em;
+}
+.exp-item.early-combined .exp-bullets li {
+  padding-left: 16px;
+}
+
+/* ── DSA SECTION ──────────────────── */
+#dsa { background: var(--bg2); }
+.dsa-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.dsa-stat-block {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.dsa-big-num {
+  font-family: var(--ff-display);
+  font-size: clamp(100px, 14vw, 180px);
+  color: var(--gold);
+  line-height: 0.85;
+  letter-spacing: 0.02em;
+  position: relative;
+}
+.dsa-big-num::after {
+  content: '+';
+  font-size: 0.45em;
+  color: var(--gold2);
+  vertical-align: top;
+  margin-top: 0.1em;
+  display: inline-block;
+}
+.dsa-label {
+  font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--text3);
+  margin-top: -16px;
+}
+.dsa-categories {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+}
+.dsa-cat {
+  background: var(--bg3);
+  padding: 20px 24px;
+  border-left: 2px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+}
+.dsa-cat:hover { border-color: var(--gold); background: var(--surface); }
+.dsa-cat-name {
+  font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--text3); margin-bottom: 6px;
+}
+.dsa-cat-val {
+  font-family: var(--ff-display);
+  font-size: 28px; color: var(--text);
+  letter-spacing: 0.04em;
+}
+.dsa-body {
+  font-family: var(--ff-serif);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--text2);
+}
+.dsa-body em { color: var(--text); font-style: italic; }
+.dsa-body .gold { color: var(--gold); font-style: normal; }
+.dsa-platforms {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-top: 32px;
+}
+.dsa-platform {
+  padding: 6px 16px;
+  border: 1px solid var(--border2);
+  font-size: 11px;
+  color: var(--text2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: border-color 0.2s, color 0.2s;
+}
+.dsa-platform:hover { border-color: var(--gold); color: var(--gold); }
+
 /* ── PROJECTS ─────────────────────── */
-#projects { background: var(--bg2); }
+#projects { background: var(--bg); }
 .projects-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -547,7 +647,6 @@ footer {
 ::-webkit-scrollbar-thumb { background: var(--border2); }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-/* ── HOVER CLASS ────────────────────── */
 a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-link {
   transition-property: color, background, border-color, transform;
   transition-duration: 0.2s;
@@ -565,6 +664,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#experience">Experience</a></li>
+    <li><a href="#dsa">DSA</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#education">Education</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -579,11 +679,15 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
 
 <!-- ── HERO ───────────────────────────────────── -->
 <section id="hero">
-  <div class="hero-eyebrow">Software Engineer · AI / ML Engineer</div>
+  <div class="hero-eyebrow">Software Engineer · Backend · Distributed Systems · ML Infrastructure</div>
   <div class="hero-name">GOWTHAM<br><span class="accent">RAJENDRAN</span></div>
   <div class="hero-title">Engineering systems that think.</div>
-  <p class="hero-desc">MSc Advanced Computer Science · University of Strathclyde, UK.<br>
-  Building production-grade distributed backends, real-time data pipelines, and intelligent ML systems — with a bias for measurable impact and architectural depth.</p>
+  <div class="hero-desc">
+    <p><span class="em">Software Engineer focused on backend systems and production ML infrastructure.</span></p>
+    <p>I design and build <span class="highlight">event-driven backend systems</span> and <span class="highlight">data pipelines</span> under production workloads, with a focus on reliability, performance, and scalability. My work includes reducing latency in critical paths, optimizing service performance, and building systems with strong consistency and fault-tolerance requirements.</p>
+    <p>MSc Advanced Computer Science · University of Strathclyde, UK.</p>
+  </div>
+  <div class="hero-cta">Currently targeting backend, distributed systems, and ML engineering roles in product-focused companies.</div>
   <div class="hero-metrics">
     <div class="metric-item">
       <div class="metric-num counter" data-target="5">0</div>
@@ -596,8 +700,8 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
     </div>
     <div class="metric-div"></div>
     <div class="metric-item">
-      <div class="metric-num counter" data-target="150">0</div>
-      <div class="metric-label">LeetCode Solved</div>
+      <div class="metric-num counter" data-target="500">0</div>
+      <div class="metric-label">DSA Problems Solved</div>
     </div>
     <div class="metric-div"></div>
     <div class="metric-item">
@@ -628,9 +732,8 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
     <div class="ticker-item">XGBoost · SHAP<span class="ticker-sep">·</span></div>
     <div class="ticker-item"><span class="gold">OpenTelemetry</span><span class="ticker-sep">·</span></div>
     <div class="ticker-item">Spark Streaming<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">150+ LeetCode</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">500+ DSA Solved</span><span class="ticker-sep">·</span></div>
     <div class="ticker-item">System Design<span class="ticker-sep">·</span></div>
-    <!-- duplicate for seamless loop -->
     <div class="ticker-item"><span class="gold">Python</span><span class="ticker-sep">·</span></div>
     <div class="ticker-item">Spring Boot<span class="ticker-sep">·</span></div>
     <div class="ticker-item"><span class="gold">Apache Kafka</span><span class="ticker-sep">·</span></div>
@@ -645,7 +748,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
     <div class="ticker-item">XGBoost · SHAP<span class="ticker-sep">·</span></div>
     <div class="ticker-item"><span class="gold">OpenTelemetry</span><span class="ticker-sep">·</span></div>
     <div class="ticker-item">Spark Streaming<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">500+ LeetCode</span><span class="ticker-sep">·</span></div>
+    <div class="ticker-item"><span class="gold">500+ DSA Solved</span><span class="ticker-sep">·</span></div>
     <div class="ticker-item">System Design<span class="ticker-sep">·</span></div>
   </div>
 </div>
@@ -719,7 +822,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       <div class="exp-content">
         <div class="exp-role">Software Development Engineer</div>
         <ul class="exp-bullets">
-          <li>Owned backend system design for retail platforms  — making decisions around service boundaries, API contracts, and data consistency models under concurrent traffic.</li>
+          <li>Owned backend system design for retail platforms — making decisions around service boundaries, API contracts, and data consistency models under concurrent traffic.</li>
           <li>Diagnosed and resolved p99 latency spikes by profiling query execution plans: eliminated N+1 patterns, added composite indexes on hot-path joins, and introduced Redis caching for catalogue reads — reducing p99 latency by ~20% without schema changes.</li>
           <li>Designed ingestion pipeline (event capture → validation → transformation → storage) with idempotent writes and retry-safe consumers, reducing data inconsistencies by 30%.</li>
           <li>Introduced API contract testing between backend and frontend teams, reducing integration regressions and improving release predictability across services.</li>
@@ -776,17 +879,82 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
+    <!-- Early Engineering Experience -->
+    <div class="exp-item early-combined reveal reveal-delay-3">
+      <div class="exp-meta">
+        <div class="exp-period">2019 — 2022</div>
+        <div class="exp-company">Early Engineering Experience</div>
+        <div class="exp-loc">India</div>
+      </div>
+      <div class="exp-content">
+        <div class="exp-role">Internships & Projects</div>
+        <ul class="exp-bullets">
+          <li>Built backend services and REST APIs using Python (Flask/Django), supporting data ingestion and automation workflows across multiple internship engagements.</li>
+          <li>Developed web scraping and data processing pipelines using BeautifulSoup and Scrapy for structured data extraction at scale.</li>
+          <li>Implemented CI/CD pipelines and containerized applications using Docker; gained exposure to Kubernetes-based deployment workflows.</li>
+          <li>Applied clustering, forecasting, and recommendation techniques in data analysis projects, improving targeting and prediction accuracy in internal systems.</li>
+          <li>Worked with data visualization tools (Pandas, Matplotlib, Seaborn) to generate actionable insights from raw data for stakeholder reporting.</li>
+        </ul>
+        <div class="exp-tags">
+          <span class="exp-tag">Python</span><span class="exp-tag">Flask</span><span class="exp-tag">Django</span>
+          <span class="exp-tag">BeautifulSoup</span><span class="exp-tag">Scrapy</span>
+          <span class="exp-tag">Docker</span><span class="exp-tag">Kubernetes</span>
+          <span class="exp-tag">Pandas</span><span class="exp-tag">Scikit-learn</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── DSA SECTION ────────────────────────────── -->
+<section id="dsa">
+  <div class="section-label" data-num="02">DSA</div>
+  <div class="section-title reveal">DATA STRUCTURES<br>& ALGORITHMS</div>
+  <div class="dsa-inner">
+    <div class="dsa-stat-block reveal">
+      <div class="dsa-big-num counter" data-target="500">0</div>
+      <div class="dsa-label">Problems Solved</div>
+      <div class="dsa-categories">
+        <div class="dsa-cat">
+          <div class="dsa-cat-name">Arrays & Hashing</div>
+          <div class="dsa-cat-val">Mastered</div>
+        </div>
+        <div class="dsa-cat">
+          <div class="dsa-cat-name">Graphs</div>
+          <div class="dsa-cat-val">BFS · DFS · Dijkstra</div>
+        </div>
+        <div class="dsa-cat">
+          <div class="dsa-cat-name">Dynamic Programming</div>
+          <div class="dsa-cat-val">Tabulation · Memo</div>
+        </div>
+        <div class="dsa-cat">
+          <div class="dsa-cat-name">System Design</div>
+          <div class="dsa-cat-val">Fundamentals</div>
+        </div>
+      </div>
+    </div>
+    <div class="dsa-body reveal reveal-delay-2">
+      <p>Solved <span class="gold">500+ problems</span> across <em>arrays</em>, <em>graphs</em>, <em>dynamic programming</em>, and <em>system design fundamentals</em> — spanning LeetCode, HackerRank, and competitive programming platforms.</p>
+      <br>
+      <p>Strong focus on algorithmic complexity analysis, space-time trade-offs, and translating DSA principles into production system architecture decisions.</p>
+      <div class="dsa-platforms">
+        <a class="dsa-platform" href="https://leetcode.com/gowtham27rajendran-commits" target="_blank">LeetCode</a>
+        <span class="dsa-platform">HackerRank</span>
+        <span class="dsa-platform">Competitive Programming</span>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ── PROJECTS ────────────────────────────────── -->
 <section id="projects">
-  <div class="section-label" data-num="02">Projects</div>
+  <div class="section-label" data-num="03">Projects</div>
   <div class="section-title reveal">SELECTED<br>WORK</div>
 
   <div class="projects-grid">
 
-    <div class="project-card project-card-wide reveal" onclick="window.open('https://github.com/gowtham-rajendran/distributed-order-processing','_blank')">
+    <div class="project-card project-card-wide reveal" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">01</div>
       <div class="project-card-wide-inner">
         <div>
@@ -808,7 +976,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card reveal" onclick="window.open('https://github.com/gowtham-rajendran/distributed-url-shortener','_blank')">
+    <div class="project-card reveal" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">02</div>
       <div class="project-category">System Design · Backend</div>
       <div class="project-name">Distributed URL<br>Shortener</div>
@@ -823,7 +991,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham-rajendran/ml-feature-store','_blank')">
+    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">03</div>
       <div class="project-category">MLOps · Data Engineering</div>
       <div class="project-name">Real-Time ML<br>Feature Store</div>
@@ -838,7 +1006,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham-rajendran/semantic-search-engine','_blank')">
+    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">04</div>
       <div class="project-category">AI · NLP</div>
       <div class="project-name">Semantic Search<br>Engine</div>
@@ -853,7 +1021,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card reveal reveal-delay-3" onclick="window.open('https://github.com/gowtham-rajendran/fraud-detection','_blank')">
+    <div class="project-card reveal reveal-delay-3" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">05</div>
       <div class="project-category">ML · Streaming</div>
       <div class="project-name">Real-Time Fraud<br>Detection</div>
@@ -868,7 +1036,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card project-card-wide reveal" onclick="window.open('https://github.com/gowtham-rajendran/log-analytics-pipeline','_blank')">
+    <div class="project-card project-card-wide reveal" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">06</div>
       <div class="project-card-wide-inner">
         <div>
@@ -890,7 +1058,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham-rajendran/rate-limiter-service','_blank')">
+    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">07</div>
       <div class="project-category">Backend · System Design</div>
       <div class="project-name">Rate Limiter<br>as a Service</div>
@@ -904,7 +1072,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham-rajendran/automl-pipeline','_blank')">
+    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">08</div>
       <div class="project-category">MLOps · Automation</div>
       <div class="project-name">AutoML<br>Pipeline</div>
@@ -918,7 +1086,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham-rajendran/recommendation-engine','_blank')">
+    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">09</div>
       <div class="project-category">ML · Product</div>
       <div class="project-name">Recommendation<br>Engine</div>
@@ -932,7 +1100,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       </div>
     </div>
 
-    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham-rajendran/observability-platform','_blank')">
+    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
       <div class="project-num">10</div>
       <div class="project-category">Infrastructure · DevOps</div>
       <div class="project-name">Observability<br>Platform</div>
@@ -951,7 +1119,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
 
 <!-- ── EDUCATION ──────────────────────────────── -->
 <section id="education">
-  <div class="section-label" data-num="03">Education</div>
+  <div class="section-label" data-num="04">Education</div>
   <div class="section-title reveal">ACADEMIC<br>FOUNDATION</div>
   <div class="edu-grid">
     <div class="edu-card reveal">
@@ -971,7 +1139,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
 
 <!-- ── SKILLS ─────────────────────────────────── -->
 <section id="skills">
-  <div class="section-label" data-num="04">Skills</div>
+  <div class="section-label" data-num="05">Skills</div>
   <div class="skills-matrix">
     <div class="skill-block reveal">
       <div class="skill-block-title">Machine Learning</div>
@@ -1003,7 +1171,7 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       <div class="skill-item"><span class="skill-name">Kubernetes</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="78" style="width:0%"></div></div></div>
       <div class="skill-item"><span class="skill-name">Terraform / CI/CD</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="80" style="width:0%"></div></div></div>
       <div class="skill-item"><span class="skill-name">Python</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="95" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">LeetCode (150+)</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">DSA (500+ solved)</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
     </div>
   </div>
 </section>
@@ -1022,9 +1190,9 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
       <span class="contact-link-label">LinkedIn</span>
       <span class="contact-link-val">gowtham-rajendran-ai</span>
     </a>
-    <a class="contact-link" href="https://github.com/gowtham-rajendran" target="_blank">
+    <a class="contact-link" href="https://github.com/gowtham27rajendran-commits" target="_blank">
       <span class="contact-link-label">GitHub</span>
-      <span class="contact-link-val">gowtham-rajendran</span>
+      <span class="contact-link-val">gowtham27rajendran-commits</span>
     </a>
     <a class="contact-link" href="tel:+919629881914">
       <span class="contact-link-label">Phone</span>
@@ -1147,3 +1315,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done. File size: $(wc -c < /home/claude/portfolio.html) bytes"
+Output
+
+Done. File size: 59267 bytes
+Done
