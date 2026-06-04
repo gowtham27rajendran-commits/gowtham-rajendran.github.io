@@ -1,662 +1,279 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gowtham Rajendran — AI Engineer</title>
+<title>Gowtham Rajendran — Backend · Data · ML Engineering</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #080808;
-  --bg2: #0f0f0f;
-  --bg3: #161616;
-  --surface: #1a1a1a;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --gold: #c9a84c;
-  --gold2: #e8c870;
-  --gold-dim: rgba(201,168,76,0.15);
-  --gold-glow: rgba(201,168,76,0.06);
-  --text: #e8e4dd;
-  --text2: #a09890;
-  --text3: #5a5550;
-  --red: #c84b4b;
-  --teal: #4b9cc8;
-  --green: #4bc87a;
-  --ff-display: 'Bebas Neue', sans-serif;
-  --ff-serif: 'Cormorant Garamond', serif;
-  --ff-mono: 'DM Mono', monospace;
+:root{
+  --bg:#06060a;--bg2:#0b0b10;--bg3:#111118;--surface:#16161e;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.11);
+  --gold:#c9a84c;--gold2:#e8c870;--gold-dim:rgba(201,168,76,.13);--gold-glow:rgba(201,168,76,.05);
+  --text:#e8e4dd;--text2:#9a9490;--text3:#4e4c48;
+  --green:#3ddc84;--teal:#4bc8c8;--red:#e05555;--blue:#5588e0;--purple:#9966cc;
+  --ff-d:'Bebas Neue',sans-serif;--ff-s:'Cormorant Garamond',serif;--ff-m:'DM Mono',monospace;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-m);font-size:13px;font-weight:300;line-height:1.7;overflow-x:hidden;cursor:none}
+::selection{background:var(--gold-dim);color:var(--gold2)}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+/* CURSOR */
+#cursor{position:fixed;top:0;left:0;z-index:9999;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:transform .15s,background .2s}
+#cursor-ring{position:fixed;top:0;left:0;z-index:9998;width:32px;height:32px;border:1px solid rgba(201,168,76,.4);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s}
+body.hovering #cursor{transform:translate(-50%,-50%) scale(2.5);background:var(--gold2)}
+body.hovering #cursor-ring{width:48px;height:48px;opacity:.4}
+canvas#canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35}
+.page{position:relative;z-index:1}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--ff-mono);
-  font-size: 13px;
-  font-weight: 300;
-  line-height: 1.7;
-  overflow-x: hidden;
-  cursor: none;
-}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;border-bottom:1px solid transparent;transition:border-color .4s,background .4s}
+nav.scrolled{border-color:var(--border);background:rgba(6,6,10,.92);backdrop-filter:blur(14px)}
+.nav-logo{font-family:var(--ff-d);font-size:22px;letter-spacing:.15em;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--text3);text-decoration:none;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.nav-status{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--text3);letter-spacing:.1em}
+.nav-gh{display:flex;align-items:center;gap:6px;padding:5px 12px;border:1px solid var(--border2);text-decoration:none;color:var(--text2);font-size:10px;letter-spacing:.15em;text-transform:uppercase;transition:color .2s,border-color .2s}
+.nav-gh:hover{color:var(--gold);border-color:var(--gold)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-::selection { background: var(--gold-dim); color: var(--gold2); }
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 48px 80px;position:relative}
+.hero-eyebrow{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;display:flex;align-items:center;gap:16px;opacity:0;transform:translateY(20px);animation:fadeUp .8s .3s forwards}
+.hero-eyebrow::before{content:'';display:block;width:40px;height:1px;background:var(--gold)}
+.hero-name{font-family:var(--ff-d);font-size:clamp(80px,11vw,150px);line-height:.92;color:var(--text);opacity:0;transform:translateY(30px);animation:fadeUp .9s .5s forwards}
+.hero-name .accent{color:var(--gold)}
+.hero-title{font-family:var(--ff-s);font-size:clamp(20px,2.8vw,34px);font-weight:300;font-style:italic;color:var(--text2);margin-top:20px;opacity:0;transform:translateY(20px);animation:fadeUp .8s .7s forwards}
+.hero-desc{max-width:640px;margin-top:28px;color:var(--text2);line-height:1.9;opacity:0;transform:translateY(20px);animation:fadeUp .8s .9s forwards}
+.hero-desc p+p{margin-top:12px}
+.hero-desc .hl{color:var(--gold)}.hero-desc .em{color:var(--text);font-style:italic}
+.hero-metrics{display:flex;gap:48px;margin-top:56px;flex-wrap:wrap;opacity:0;transform:translateY(20px);animation:fadeUp .8s 1.1s forwards}
+.metric-item{display:flex;flex-direction:column;gap:4px}
+.metric-num{font-family:var(--ff-d);font-size:40px;color:var(--gold);line-height:1;letter-spacing:.03em}
+.metric-label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--text3)}
+.metric-div{width:1px;height:56px;background:var(--border2);align-self:center}
+.hero-scroll{position:absolute;bottom:36px;left:48px;display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--text3);opacity:0;animation:fadeUp .8s 1.5s forwards}
+.scroll-line{width:60px;height:1px;background:var(--text3);position:relative;overflow:hidden}
+.scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--gold);animation:scrollLine 2s 2s infinite}
+@keyframes scrollLine{0%{left:-100%}100%{left:100%}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 
-/* ── CURSOR ─────────────────────────── */
-#cursor {
-  position: fixed; top: 0; left: 0; z-index: 9999;
-  width: 8px; height: 8px;
-  background: var(--gold);
-  border-radius: 50%;
-  pointer-events: none;
-  transition: transform 0.15s, background 0.2s;
-  transform: translate(-50%, -50%);
-}
-#cursor-ring {
-  position: fixed; top: 0; left: 0; z-index: 9998;
-  width: 32px; height: 32px;
-  border: 1px solid rgba(201,168,76,0.4);
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  transition: transform 0.08s linear, width 0.2s, height 0.2s, opacity 0.2s;
-}
-body.hovering #cursor { transform: translate(-50%,-50%) scale(2.5); background: var(--gold2); }
-body.hovering #cursor-ring { width: 48px; height: 48px; opacity: 0.4; }
+/* SECTIONS */
+section{padding:100px 48px;position:relative}
+.section-label{display:flex;align-items:center;gap:16px;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:56px}
+.section-label::before{content:attr(data-num);font-family:var(--ff-d);font-size:11px;color:var(--text3)}
+.section-label::after{content:'';flex:1;max-width:80px;height:1px;background:var(--border2)}
+.section-title{font-family:var(--ff-d);font-size:clamp(44px,6.5vw,88px);line-height:.9;letter-spacing:.02em;margin-bottom:60px}
 
-/* ── CANVAS ─────────────────────────── */
-#canvas {
-  position: fixed; inset: 0; z-index: 0;
-  pointer-events: none;
-  opacity: 0.4;
-}
+/* REVEAL */
+.rv{opacity:0;transform:translateY(32px);transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
 
-/* ── LAYOUT ─────────────────────────── */
-.page { position: relative; z-index: 1; }
+/* TICKER */
+.ticker{background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;overflow:hidden;white-space:nowrap}
+.ticker-inner{display:inline-flex;gap:40px;animation:ticker 28s linear infinite}
+.ticker-item{display:inline-flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3)}
+.ticker-item .g{color:var(--gold)}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ── NAV ─────────────────────────────── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 48px;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
-}
-nav.scrolled {
-  border-color: var(--border);
-  background: rgba(8,8,8,0.85);
-  backdrop-filter: blur(12px);
-}
-.nav-logo {
-  font-family: var(--ff-display);
-  font-size: 22px;
-  letter-spacing: 0.15em;
-  color: var(--gold);
-  text-decoration: none;
-}
-.nav-links { display: flex; gap: 36px; list-style: none; }
-.nav-links a {
-  color: var(--text2);
-  text-decoration: none;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-.nav-links a:hover { color: var(--gold); }
-.nav-status {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; color: var(--text2);
-  letter-spacing: 0.1em;
-}
-.status-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--green);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+/* ABOUT */
+#about{background:var(--bg2)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.about-body{font-family:var(--ff-s);font-size:19px;font-weight:300;line-height:1.75;color:var(--text2)}
+.about-body em{color:var(--text);font-style:italic}
+.about-body .gold{color:var(--gold);font-style:normal}
+.stack-group{margin-bottom:20px}
+.stack-label{font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.stack-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{padding:3px 9px;border:1px solid var(--border2);font-size:10px;color:var(--text2);letter-spacing:.04em;transition:border-color .2s,color .2s}
+.tag:hover{border-color:var(--gold);color:var(--gold)}
 
-/* ── HERO ─────────────────────────────── */
-#hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 120px 48px 80px;
-  position: relative;
-}
-.hero-eyebrow {
-  font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 24px;
-  display: flex; align-items: center; gap: 16px;
-  opacity: 0; transform: translateY(20px);
-  animation: fadeUp 0.8s 0.3s forwards;
-}
-.hero-eyebrow::before {
-  content: '';
-  display: block; width: 40px; height: 1px;
-  background: var(--gold);
-}
-.hero-name {
-  font-family: var(--ff-display);
-  font-size: clamp(80px, 12vw, 160px);
-  line-height: 0.92;
-  letter-spacing: -0.01em;
-  color: var(--text);
-  opacity: 0; transform: translateY(30px);
-  animation: fadeUp 0.9s 0.5s forwards;
-}
-.hero-name .accent { color: var(--gold); }
-.hero-title {
-  font-family: var(--ff-serif);
-  font-size: clamp(22px, 3vw, 36px);
-  font-weight: 300;
-  font-style: italic;
-  color: var(--text2);
-  margin-top: 20px;
-  opacity: 0; transform: translateY(20px);
-  animation: fadeUp 0.8s 0.7s forwards;
-}
-.hero-desc {
-  max-width: 620px;
-  margin-top: 32px;
-  color: var(--text2);
-  line-height: 1.9;
-  opacity: 0; transform: translateY(20px);
-  animation: fadeUp 0.8s 0.9s forwards;
-  font-size: 13px;
-}
-.hero-desc p + p { margin-top: 14px; }
-.hero-desc .highlight { color: var(--gold); }
-.hero-desc .em { color: var(--text); font-style: italic; }
-.hero-cta {
-  margin-top: 20px;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--text3);
-  font-style: italic;
-  opacity: 0; transform: translateY(20px);
-  animation: fadeUp 0.8s 1.05s forwards;
-}
-.hero-metrics {
-  display: flex; gap: 48px;
-  margin-top: 64px;
-  opacity: 0; transform: translateY(20px);
-  animation: fadeUp 0.8s 1.1s forwards;
-}
-.metric-item { display: flex; flex-direction: column; gap: 4px; }
-.metric-num {
-  font-family: var(--ff-display);
-  font-size: 42px;
-  color: var(--gold);
-  line-height: 1;
-  letter-spacing: 0.03em;
-}
-.metric-label {
-  font-size: 10px; letter-spacing: 0.25em;
-  text-transform: uppercase; color: var(--text3);
-}
-.metric-div {
-  width: 1px; height: 60px; background: var(--border2);
-  align-self: center;
-}
-.hero-scroll {
-  position: absolute; bottom: 40px; left: 48px;
-  display: flex; align-items: center; gap: 12px;
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--text3);
-  opacity: 0; animation: fadeUp 0.8s 1.5s forwards;
-}
-.scroll-line {
-  width: 60px; height: 1px; background: var(--text3);
-  position: relative; overflow: hidden;
-}
-.scroll-line::after {
-  content: ''; position: absolute; top: 0; left: -100%;
-  width: 100%; height: 100%; background: var(--gold);
-  animation: scrollLine 2s 2s infinite;
-}
-@keyframes scrollLine { 0%{left:-100%} 100%{left:100%} }
-@keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+/* EXPERIENCE */
+.exp-list{display:flex;flex-direction:column}
+.exp-item{display:grid;grid-template-columns:200px 1fr;gap:40px;padding:44px 0;border-top:1px solid var(--border);position:relative}
+.exp-item::before{content:'';position:absolute;left:-48px;top:0;bottom:0;width:0;background:var(--gold-glow);transition:width .4s}
+.exp-item:hover::before{width:calc(100% + 96px)}
+.exp-period{font-size:10px;letter-spacing:.15em;color:var(--gold);margin-bottom:7px}
+.exp-company{font-family:var(--ff-s);font-size:20px;font-weight:300;color:var(--text);line-height:1.2}
+.exp-loc{font-size:10px;color:var(--text3);margin-top:4px}
+.exp-role{font-family:var(--ff-d);font-size:26px;letter-spacing:.05em;color:var(--text);margin-bottom:14px}
+.exp-bullets{list-style:none;margin-bottom:18px;display:flex;flex-direction:column;gap:9px}
+.exp-bullets li{color:var(--text2);font-size:12px;line-height:1.7;padding-left:14px;position:relative}
+.exp-bullets li::before{content:'—';position:absolute;left:0;color:var(--gold);font-size:10px}
+.exp-tags{display:flex;flex-wrap:wrap;gap:5px}
+.exp-tag{font-size:9px;letter-spacing:.15em;color:var(--gold);padding:2px 7px;border:1px solid var(--gold-dim)}
 
-/* ── SECTION COMMON ───────────────── */
-section { padding: 120px 48px; position: relative; }
-.section-label {
-  display: flex; align-items: center; gap: 16px;
-  font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 64px;
-}
-.section-label::before {
-  content: attr(data-num);
-  font-family: var(--ff-display);
-  font-size: 11px; color: var(--text3);
-}
-.section-label::after {
-  content: ''; flex: 1; max-width: 80px;
-  height: 1px; background: var(--border2);
-}
-.section-title {
-  font-family: var(--ff-display);
-  font-size: clamp(48px, 7vw, 96px);
-  line-height: 0.9;
-  letter-spacing: 0.02em;
-  margin-bottom: 64px;
-}
+/* DSA */
+#dsa{background:var(--bg2)}
+.dsa-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.dsa-big-num{font-family:var(--ff-d);font-size:clamp(90px,13vw,170px);color:var(--gold);line-height:.85}
+.dsa-big-num::after{content:'+';font-size:.42em;color:var(--gold2);vertical-align:top;margin-top:.12em;display:inline-block}
+.dsa-label{font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--text3);margin-top:-12px}
+.dsa-cats{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:28px}
+.dsa-cat{background:var(--bg3);padding:18px 22px;border-left:2px solid transparent;transition:border-color .3s,background .3s}
+.dsa-cat:hover{border-color:var(--gold);background:var(--surface)}
+.dsa-cat-name{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.dsa-cat-val{font-family:var(--ff-d);font-size:22px;color:var(--text)}
+.dsa-body{font-family:var(--ff-s);font-size:19px;font-weight:300;line-height:1.75;color:var(--text2)}
+.dsa-body em{color:var(--text);font-style:italic}
+.dsa-body .gold{color:var(--gold)}
+.dsa-platforms{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.dsa-platform{padding:5px 14px;border:1px solid var(--border2);font-size:10px;color:var(--text2);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:border-color .2s,color .2s}
+.dsa-platform:hover{border-color:var(--gold);color:var(--gold)}
 
-/* ── REVEAL ANIMATION ─────────────── */
-.reveal {
-  opacity: 0; transform: translateY(40px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
+/* ═══ PROJECTS ═══════════════════════════════════════ */
+#projects{background:var(--bg)}
+.faang-banner{display:flex;align-items:center;gap:20px;padding:14px 24px;background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(201,168,76,.03));border:1px solid rgba(201,168,76,.2);margin-bottom:48px}
+.faang-banner strong{color:var(--gold);font-weight:400}
+.faang-banner a{margin-left:auto;padding:5px 14px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:10px;letter-spacing:.18em;text-transform:uppercase;transition:background .2s,color .2s}
+.faang-banner a:hover{background:var(--gold);color:#000}
 
-/* ── ABOUT ────────────────────────── */
-#about { background: var(--bg2); }
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: start;
-}
-.about-body {
-  font-family: var(--ff-serif);
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 1.7;
-  color: var(--text2);
-}
-.about-body em { color: var(--text); font-style: italic; }
-.about-body .gold { color: var(--gold); font-style: normal; }
-.about-stack { display: flex; flex-direction: column; gap: 24px; }
-.stack-group { }
-.stack-label {
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-}
-.stack-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag {
-  padding: 4px 10px;
-  border: 1px solid var(--border2);
-  font-size: 11px;
-  color: var(--text2);
-  letter-spacing: 0.05em;
-  transition: border-color 0.2s, color 0.2s;
-}
-.tag:hover { border-color: var(--gold); color: var(--gold); }
+/* PROJECT CARD */
+.proj-card{background:var(--bg3);margin-bottom:2px;position:relative;overflow:hidden;transition:background .3s}
+.proj-card:hover{background:var(--surface)}
+.proj-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:0;background:rgba(201,168,76,.03);transition:width .5s}
+.proj-card:hover::before{width:100%}
 
-/* ── EXPERIENCE ───────────────────── */
-#experience { }
-.exp-list { display: flex; flex-direction: column; }
-.exp-item {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 40px;
-  padding: 48px 0;
-  border-top: 1px solid var(--border);
-  transition: background 0.3s;
-  position: relative;
-}
-.exp-item::before {
-  content: '';
-  position: absolute; left: -48px; top: 0; bottom: 0; width: 0;
-  background: var(--gold-glow);
-  transition: width 0.4s;
-}
-.exp-item:hover::before { width: calc(100% + 96px); }
-.exp-meta { }
-.exp-period {
-  font-size: 11px; letter-spacing: 0.15em;
-  color: var(--gold); margin-bottom: 8px;
-}
-.exp-company {
-  font-family: var(--ff-serif);
-  font-size: 22px;
-  font-weight: 300;
-  color: var(--text); line-height: 1.2;
-}
-.exp-loc {
-  font-size: 11px; color: var(--text3);
-  margin-top: 4px; letter-spacing: 0.05em;
-}
-.exp-content { }
-.exp-role {
-  font-family: var(--ff-display);
-  font-size: 28px;
-  letter-spacing: 0.05em;
-  color: var(--text);
-  margin-bottom: 16px;
-}
-.exp-desc {
-  color: var(--text2);
-  line-height: 1.8;
-  margin-bottom: 20px;
-  font-size: 13px;
-}
-.exp-bullets {
-  list-style: none;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.exp-bullets li {
-  color: var(--text2);
-  font-size: 13px;
-  line-height: 1.7;
-  padding-left: 16px;
-  position: relative;
-}
-.exp-bullets li::before {
-  content: '—';
-  position: absolute; left: 0;
-  color: var(--gold);
-  font-size: 11px;
-}
-.exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.exp-tag {
-  font-size: 10px; letter-spacing: 0.15em;
-  color: var(--gold); padding: 2px 8px;
-  border: 1px solid var(--gold-dim);
-}
+/* CARD HEADER */
+.pc-header{display:grid;grid-template-columns:auto 1fr auto;gap:0;align-items:stretch;border-bottom:1px solid var(--border)}
+.pc-num-col{padding:28px 28px;border-right:1px solid var(--border);display:flex;align-items:flex-start}
+.pc-num{font-family:var(--ff-d);font-size:56px;color:var(--border2);line-height:1;transition:color .3s}
+.proj-card:hover .pc-num{color:var(--gold-dim)}
+.pc-meta{padding:28px 32px}
+.pc-faang{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.22);font-size:8px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+.pc-cat{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.pc-name{font-family:var(--ff-d);font-size:clamp(28px,3.5vw,48px);line-height:.95;color:var(--text);margin-bottom:10px}
+.pc-tagline{font-family:var(--ff-s);font-size:16px;font-weight:300;font-style:italic;color:var(--text2)}
+.pc-links-col{padding:28px 28px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:8px;align-items:flex-end;justify-content:flex-start;min-width:220px}
+.pc-gh-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--border2);text-decoration:none;color:var(--text2);font-size:10px;letter-spacing:.12em;text-transform:uppercase;transition:color .2s,border-color .2s;white-space:nowrap}
+.pc-gh-btn:hover{color:var(--gold);border-color:var(--gold)}
+.pc-gh-btn.primary{border-color:var(--gold);color:var(--gold)}
+.pc-gh-btn.primary:hover{background:var(--gold);color:#000}
 
-/* ── EARLY EXP COMBINED ──────────── */
-.exp-item.early-combined .exp-role {
-  font-size: 22px;
-  letter-spacing: 0.04em;
-}
-.exp-item.early-combined .exp-bullets li {
-  padding-left: 16px;
-}
+/* BADGES ROW */
+.pc-badges{padding:14px 32px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(0,0,0,.2)}
+.badge{display:inline-flex;border-radius:2px;overflow:hidden;font-size:9px;letter-spacing:.03em}
+.bl{padding:2px 5px;background:#3a3a3a;color:#aaa}
+.br{padding:2px 7px;color:#fff}
+.br.green{background:#2ea043}.br.blue{background:#1f6feb}.br.orange{background:#bb5d00}.br.purple{background:#6e40c9}.br.teal{background:#0d7377}.br.red{background:#8b0000}
 
-/* ── DSA SECTION ──────────────────── */
-#dsa { background: var(--bg2); }
-.dsa-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-}
-.dsa-stat-block {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-.dsa-big-num {
-  font-family: var(--ff-display);
-  font-size: clamp(100px, 14vw, 180px);
-  color: var(--gold);
-  line-height: 0.85;
-  letter-spacing: 0.02em;
-  position: relative;
-}
-.dsa-big-num::after {
-  content: '+';
-  font-size: 0.45em;
-  color: var(--gold2);
-  vertical-align: top;
-  margin-top: 0.1em;
-  display: inline-block;
-}
-.dsa-label {
-  font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase;
-  color: var(--text3);
-  margin-top: -16px;
-}
-.dsa-categories {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-}
-.dsa-cat {
-  background: var(--bg3);
-  padding: 20px 24px;
-  border-left: 2px solid transparent;
-  transition: border-color 0.3s, background 0.3s;
-}
-.dsa-cat:hover { border-color: var(--gold); background: var(--surface); }
-.dsa-cat-name {
-  font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
-  color: var(--text3); margin-bottom: 6px;
-}
-.dsa-cat-val {
-  font-family: var(--ff-display);
-  font-size: 28px; color: var(--text);
-  letter-spacing: 0.04em;
-}
-.dsa-body {
-  font-family: var(--ff-serif);
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 1.7;
-  color: var(--text2);
-}
-.dsa-body em { color: var(--text); font-style: italic; }
-.dsa-body .gold { color: var(--gold); font-style: normal; }
-.dsa-platforms {
-  display: flex; gap: 12px; flex-wrap: wrap;
-  margin-top: 32px;
-}
-.dsa-platform {
-  padding: 6px 16px;
-  border: 1px solid var(--border2);
-  font-size: 11px;
-  color: var(--text2);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transition: border-color 0.2s, color 0.2s;
-}
-.dsa-platform:hover { border-color: var(--gold); color: var(--gold); }
+/* TECH ROW */
+.pc-tech{padding:16px 32px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:5px}
+.t-tag{padding:3px 9px;border:1px solid var(--border2);font-size:10px;color:var(--text2);letter-spacing:.05em;transition:border-color .2s,color .2s}
+.t-tag:hover{border-color:var(--gold);color:var(--gold)}
 
-/* ── PROJECTS ─────────────────────── */
-#projects { background: var(--bg); }
-.projects-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-}
-.project-card {
-  background: var(--bg3);
-  padding: 40px;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.project-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  transform: scaleX(0);
-  transition: transform 0.4s;
-}
-.project-card:hover { background: var(--surface); }
-.project-card:hover::before { transform: scaleX(1); }
-.project-num {
-  font-family: var(--ff-display);
-  font-size: 64px;
-  color: var(--border2);
-  line-height: 1;
-  position: absolute; top: 20px; right: 24px;
-  transition: color 0.3s;
-}
-.project-card:hover .project-num { color: var(--gold-dim); }
-.project-category {
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 12px;
-}
-.project-name {
-  font-family: var(--ff-display);
-  font-size: 30px;
-  letter-spacing: 0.04em;
-  color: var(--text);
-  line-height: 1.1;
-  margin-bottom: 16px;
-}
-.project-desc {
-  color: var(--text2);
-  font-size: 12px; line-height: 1.7;
-  margin-bottom: 24px;
-}
-.project-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
-.project-tech span {
-  font-size: 10px; color: var(--text3);
-  padding: 2px 8px;
-  border: 1px solid var(--border);
-  letter-spacing: 0.1em;
-}
-.project-insights { border-top: 1px solid var(--border); padding-top: 16px; }
-.insight-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 6px 0;
-}
-.insight-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; }
-.insight-val { font-size: 11px; color: var(--gold); letter-spacing: 0.08em; }
-.project-card-wide {
-  grid-column: 1 / -1;
-}
-.project-card-wide .project-name { font-size: 40px; }
-.project-card-wide-inner {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-}
+/* BODY AREA */
+.pc-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.pc-left{padding:32px;border-right:1px solid var(--border)}
+.pc-right{padding:32px}
+.pc-body-full{padding:32px;grid-column:1/-1}
 
-/* ── EDUCATION ────────────────────── */
-#education { }
-.edu-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-}
-.edu-card {
-  background: var(--bg3);
-  padding: 48px;
-  border-top: 2px solid transparent;
-  transition: border-color 0.3s;
-}
-.edu-card:hover { border-color: var(--gold); }
-.edu-year {
-  font-family: var(--ff-display); font-size: 80px;
-  color: var(--border2); line-height: 1;
-  margin-bottom: 24px;
-}
-.edu-degree {
-  font-family: var(--ff-serif);
-  font-size: 24px; font-weight: 300;
-  color: var(--text); line-height: 1.3;
-  margin-bottom: 8px;
-}
-.edu-school {
-  font-size: 12px; letter-spacing: 0.15em;
-  color: var(--gold); text-transform: uppercase;
-  margin-bottom: 24px;
-}
-.edu-detail { color: var(--text2); font-size: 12px; line-height: 1.7; }
+/* SUB TITLES */
+.sub-title{font-size:9px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 
-/* ── SKILLS MATRIX ────────────────── */
-#skills { background: var(--bg2); }
-.skills-matrix {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
-}
-.skill-block {
-  background: var(--bg3);
-  padding: 32px;
-  transition: background 0.3s;
-}
-.skill-block:hover { background: var(--surface); }
-.skill-block-title {
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 20px;
-}
-.skill-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 0; border-bottom: 1px solid var(--border);
-}
-.skill-item:last-child { border-bottom: none; }
-.skill-name { font-size: 12px; color: var(--text2); }
-.skill-bar-wrap { width: 60px; height: 2px; background: var(--border2); }
-.skill-bar { height: 100%; background: var(--gold); transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+/* DESCRIPTION */
+.pc-desc{font-family:var(--ff-s);font-size:16px;font-weight:300;line-height:1.75;color:var(--text2);margin-bottom:20px}
+.pc-desc em{color:var(--text);font-style:italic}
+.pc-desc .g{color:var(--gold);font-style:normal}
 
-/* ── CONTACT ──────────────────────── */
-#contact {
-  min-height: 50vh;
-  display: flex; flex-direction: column; justify-content: center;
-  text-align: center;
-  border-top: 1px solid var(--border);
-}
-.contact-title {
-  font-family: var(--ff-display);
-  font-size: clamp(60px, 10vw, 140px);
-  line-height: 0.9;
-  color: var(--text);
-  margin-bottom: 48px;
-}
-.contact-title .line2 { color: var(--gold); }
-.contact-links { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
-.contact-link {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  text-decoration: none; color: var(--text2);
-  transition: color 0.2s;
-}
-.contact-link:hover { color: var(--gold); }
-.contact-link-label {
-  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-}
-.contact-link-val { font-family: var(--ff-serif); font-size: 18px; font-style: italic; }
+/* ARCHITECTURE DIAGRAM */
+.arch-wrap{background:#060609;border:1px solid rgba(201,168,76,.12);overflow-x:auto;margin-bottom:20px}
+.arch-pre{font-family:var(--ff-m);font-size:11px;line-height:1.85;white-space:pre;padding:22px 24px;color:var(--text3)}
+.ag{color:var(--gold)}.at{color:var(--teal)}.agr{color:var(--green)}.ab{color:var(--blue)}.ar{color:var(--red)}.apu{color:var(--purple)}.aw{color:var(--text)}
 
-/* ── TICKER ───────────────────────── */
-.ticker {
-  background: var(--bg3);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.ticker-inner {
-  display: inline-flex; gap: 48px;
-  animation: ticker 30s linear infinite;
-}
-.ticker-item {
-  display: flex; align-items: center; gap: 16px;
-  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--text3);
-}
-.ticker-item .gold { color: var(--gold); }
-.ticker-sep { color: var(--border2); }
-@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+/* WHY ARCHITECTURE */
+.why-box{background:rgba(201,168,76,.03);border-left:2px solid var(--gold);padding:16px 20px;margin-bottom:20px}
+.why-box ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.why-box ul li{font-size:11px;color:var(--text2);line-height:1.65;padding-left:14px;position:relative}
+.why-box ul li::before{content:'›';position:absolute;left:0;color:var(--gold)}
 
-/* ── FOOTER ───────────────────────── */
-footer {
-  padding: 32px 48px;
-  display: flex; justify-content: space-between; align-items: center;
-  border-top: 1px solid var(--border);
-}
-.footer-copy { font-size: 11px; color: var(--text3); letter-spacing: 0.1em; }
-.footer-right { font-size: 11px; color: var(--text3); }
-.footer-right .gold { color: var(--gold); }
+/* METRICS */
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:20px}
+.m-box{background:var(--bg3);padding:16px;text-align:center}
+.m-num{font-family:var(--ff-d);font-size:30px;color:var(--gold);line-height:1}
+.m-unit{font-size:9px;color:var(--gold2);letter-spacing:.1em}
+.m-label{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-top:5px}
 
-/* ── SCROLLBAR ────────────────────── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border2); }
-::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+/* PERF BARS */
+.perf-wrap{margin-bottom:20px}
+.pb-row{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+.pb-lr{display:flex;justify-content:space-between;font-size:10px;color:var(--text3)}
+.pb-v{color:var(--gold)}
+.pb-bg{height:2px;background:var(--border2);overflow:hidden}
+.pb-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0;transition:width 1.5s cubic-bezier(.16,1,.3,1)}
 
-a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-link {
-  transition-property: color, background, border-color, transform;
-  transition-duration: 0.2s;
-}
+/* FEATURE LIST */
+.feat-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.feat-list li{font-size:11px;color:var(--text2);line-height:1.65;padding-left:14px;position:relative}
+.feat-list li::before{content:'›';position:absolute;left:0;color:var(--gold)}
+
+/* CODE BLOCK */
+.code-wrap{background:#07070c;border:1px solid var(--border);overflow-x:auto;margin-bottom:20px}
+.code-title{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.code-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.code-pre{font-family:var(--ff-m);font-size:11px;line-height:1.7;white-space:pre;padding:18px 20px;overflow-x:auto}
+.kw{color:#5588e0}.fn{color:#c9a84c}.st{color:#4bc8a8}.nm{color:#c87840}.cm{color:#3a4e2e}.cl{color:#cc9966}
+
+/* CICD / CLOUD */
+.infra-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:20px}
+.infra-box{background:var(--bg3);padding:18px 20px}
+.infra-title{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.infra-items{display:flex;flex-wrap:wrap;gap:6px}
+.infra-tag{padding:3px 8px;border:1px solid rgba(75,200,200,.2);font-size:10px;color:var(--teal);letter-spacing:.06em}
+
+/* BOTTLENECK BOX */
+.bottleneck{background:rgba(224,85,85,.05);border-left:2px solid var(--red);padding:14px 18px;margin-bottom:20px}
+.bottleneck-title{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+.bottleneck ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.bottleneck ul li{font-size:11px;color:var(--text2);line-height:1.65;padding-left:14px;position:relative}
+.bottleneck ul li::before{content:'⚠';position:absolute;left:0;color:var(--red);font-size:9px}
+
+/* EDUCATION */
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.edu-card{background:var(--bg3);padding:44px;border-top:2px solid transparent;transition:border-color .3s}
+.edu-card:hover{border-color:var(--gold)}
+.edu-year{font-family:var(--ff-d);font-size:72px;color:var(--border2);line-height:1;margin-bottom:20px}
+.edu-degree{font-family:var(--ff-s);font-size:22px;font-weight:300;color:var(--text);line-height:1.3;margin-bottom:7px}
+.edu-school{font-size:11px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:20px}
+.edu-detail{color:var(--text2);font-size:11px;line-height:1.75}
+
+/* SKILLS */
+#skills{background:var(--bg2)}
+.skills-matrix{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.skill-block{background:var(--bg3);padding:28px;transition:background .3s}
+.skill-block:hover{background:var(--surface)}
+.skill-block-title{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.skill-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.skill-item:last-child{border-bottom:none}
+.skill-name{font-size:11px;color:var(--text2)}
+.skill-bar-wrap{width:56px;height:2px;background:var(--border2)}
+.skill-bar{height:100%;background:var(--gold);transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+
+/* CONTACT */
+#contact{min-height:46vh;display:flex;flex-direction:column;justify-content:center;text-align:center;border-top:1px solid var(--border)}
+.contact-title{font-family:var(--ff-d);font-size:clamp(56px,9vw,130px);line-height:.9;color:var(--text);margin-bottom:44px}
+.contact-title .line2{color:var(--gold)}
+.contact-links{display:flex;justify-content:center;gap:44px;flex-wrap:wrap}
+.contact-link{display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:var(--text2);transition:color .2s}
+.contact-link:hover{color:var(--gold)}
+.cl-label{font-size:9px;letter-spacing:.3em;text-transform:uppercase}
+.cl-val{font-family:var(--ff-s);font-size:17px;font-style:italic}
+footer{padding:28px 48px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border)}
+.footer-copy{font-size:10px;color:var(--text3)}
+.footer-right{font-size:10px;color:var(--text3)}
+.footer-right .gold{color:var(--gold)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2)}::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 </style>
 </head>
 <body>
-
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
+<div id="cursor"></div><div id="cursor-ring"></div>
 <canvas id="canvas"></canvas>
 
 <nav id="nav">
@@ -669,468 +286,1486 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
     <li><a href="#education">Education</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <div class="nav-status">
-    <span class="status-dot"></span>
-    <span>Available · India</span>
+  <div class="nav-right">
+    <div class="nav-status"><span class="status-dot"></span><span>Available · India</span></div>
+    <a class="nav-gh" href="https://github.com/gowtham27rajendran-commits" target="_blank">⬡ GitHub</a>
   </div>
 </nav>
 
 <div class="page">
 
-<!-- ── HERO ───────────────────────────────────── -->
+<!-- ══ HERO ══════════════════════════════════════════ -->
 <section id="hero">
   <div class="hero-eyebrow">Software Engineer · Backend · Distributed Systems · ML Infrastructure</div>
   <div class="hero-name">GOWTHAM<br><span class="accent">RAJENDRAN</span></div>
-  <div class="hero-title">Engineering systems that think.</div>
+  <div class="hero-title">Engineering systems that think at scale.</div>
   <div class="hero-desc">
-    <p><span class="em">Software Engineer focused on backend systems and production ML infrastructure.</span></p>
-    <p>I design and build <span class="highlight">event-driven backend systems</span> and <span class="highlight">data pipelines</span> under production workloads, with a focus on reliability, performance, and scalability. My work includes reducing latency in critical paths, optimizing service performance, and building systems with strong consistency and fault-tolerance requirements.</p>
+    <p><span class="em">Backend &amp; ML Infrastructure Engineer</span> — I build the systems that make products fast, reliable, and intelligent.</p>
+    <p>From <span class="hl">event-driven pipelines at 100K events/sec</span> to <span class="hl">sub-5ms ML inference</span>, every project here is engineered, not just coded. Architecture diagrams, performance metrics, and CI/CD — because that's how real systems ship.</p>
     <p>MSc Advanced Computer Science · University of Strathclyde, UK.</p>
   </div>
-  <div class="hero-cta">Currently targeting backend, distributed systems, Data and ML engineering roles.</div>
   <div class="hero-metrics">
-    <div class="metric-item">
-      <div class="metric-num counter" data-target="3">0</div>
-      <div class="metric-label">Years Experience</div>
-    </div>
-
-    
+    <div class="metric-item"><div class="metric-num counter" data-target="3">0</div><div class="metric-label">Years Exp</div></div>
     <div class="metric-div"></div>
-    <div class="metric-item">
-      <div class="metric-num counter" data-target="10">0</div>
-      <div class="metric-label">Major Projects</div>
-    </div>
+    <div class="metric-item"><div class="metric-num counter" data-target="13">0</div><div class="metric-label">GitHub Repos</div></div>
     <div class="metric-div"></div>
-    <div class="metric-item">
-      <div class="metric-num counter" data-target="500">0</div>
-      <div class="metric-label">DSA Problems Solved</div>
-    </div>
+    <div class="metric-item"><div class="metric-num counter" data-target="500">0</div><div class="metric-label">DSA Solved</div></div>
     <div class="metric-div"></div>
-    <div class="metric-item">
-      <div class="metric-num counter" data-target="25">0</div>
-      <div class="metric-label">% Avg Perf. Gain</div>
-    </div>
+    <div class="metric-item"><div class="metric-num counter" data-target="25">0</div><div class="metric-label">% Avg Perf Gain</div></div>
   </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    Scroll to explore
-  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div>Scroll to explore</div>
 </section>
 
-<!-- ── TICKER ─────────────────────────────────── -->
-<div class="ticker">
-  <div class="ticker-inner" id="ticker-inner">
-    <div class="ticker-item"><span class="gold">Python</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">Spring Boot<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Apache Kafka</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">Distributed Systems<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Apache Spark</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">PostgreSQL<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Redis</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">MLflow<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Kubernetes</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">Docker · Terraform<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">FAISS</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">XGBoost · SHAP<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">OpenTelemetry</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">Spark Streaming<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">500+ DSA Solved</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">System Design<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Python</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">Spring Boot<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Apache Kafka</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">Distributed Systems<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Apache Spark</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">PostgreSQL<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Redis</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">MLflow<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">Kubernetes</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">Docker · Terraform<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">FAISS</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">XGBoost · SHAP<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">OpenTelemetry</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">Spark Streaming<span class="ticker-sep">·</span></div>
-    <div class="ticker-item"><span class="gold">500+ DSA Solved</span><span class="ticker-sep">·</span></div>
-    <div class="ticker-item">System Design<span class="ticker-sep">·</span></div>
-  </div>
-</div>
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-inner">
+  <div class="ticker-item"><span class="g">Apache Kafka</span> ·</div><div class="ticker-item">Delta Lake ·</div>
+  <div class="ticker-item"><span class="g">Apache Spark 3.5</span> ·</div><div class="ticker-item">Redis Lua ·</div>
+  <div class="ticker-item"><span class="g">XGBoost + SHAP</span> ·</div><div class="ticker-item">OpenTelemetry ·</div>
+  <div class="ticker-item"><span class="g">Docker + K8s</span> ·</div><div class="ticker-item">FastAPI ·</div>
+  <div class="ticker-item"><span class="g">FAISS + sentence-transformers</span> ·</div><div class="ticker-item">MLflow ·</div>
+  <div class="ticker-item"><span class="g">GitHub Actions CI/CD</span> ·</div><div class="ticker-item">AWS EC2 / S3 / RDS ·</div>
+  <div class="ticker-item"><span class="g">500+ DSA Problems</span> ·</div><div class="ticker-item">System Design ·</div>
+  <div class="ticker-item"><span class="g">Apache Kafka</span> ·</div><div class="ticker-item">Delta Lake ·</div>
+  <div class="ticker-item"><span class="g">Apache Spark 3.5</span> ·</div><div class="ticker-item">Redis Lua ·</div>
+  <div class="ticker-item"><span class="g">XGBoost + SHAP</span> ·</div><div class="ticker-item">OpenTelemetry ·</div>
+  <div class="ticker-item"><span class="g">Docker + K8s</span> ·</div><div class="ticker-item">FastAPI ·</div>
+  <div class="ticker-item"><span class="g">FAISS + sentence-transformers</span> ·</div><div class="ticker-item">MLflow ·</div>
+  <div class="ticker-item"><span class="g">GitHub Actions CI/CD</span> ·</div><div class="ticker-item">AWS EC2 / S3 / RDS ·</div>
+</div></div>
 
-<!-- ── ABOUT ──────────────────────────────────── -->
+<!-- ══ ABOUT ══════════════════════════════════════════ -->
 <section id="about">
   <div class="section-label" data-num="00">About</div>
   <div class="about-grid">
-    <div class="about-body reveal">
-      <p>I'm a software engineer who moves comfortably between <em>distributed backend systems</em> and <em>production ML infrastructure</em>. My foundation is a <span class="gold">Master's in Advanced Computer Science</span> from the University of Strathclyde, UK — with a specialisation in data science and machine learning.</p>
+    <div class="about-body rv">
+      <p>I'm a software engineer who moves between <em>distributed backend systems</em> and <em>production ML infrastructure</em>. Foundation: <span class="gold">MSc Advanced Computer Science</span>, University of Strathclyde, UK.</p>
       <br>
-      <p>I've built systems that <em>process millions of records daily</em>, <em>cut p99 latency by 20%</em>, and <em>handle real-time event-driven pipelines</em> with exactly-once semantics. I believe the highest-leverage engineers are those who understand the full stack — from algorithm design to deployment architecture.</p>
+      <p>I've built systems that process <em>millions of records daily</em>, cut p99 latency by 20%, and serve ML features at sub-5ms with exactly-once Kafka semantics. Every project here is production-architected: system diagrams, benchmarks, CI/CD, and documented tradeoffs.</p>
       <br>
-      <p>Currently targeting SWE , Data engineering and ML Engineering roles </p>
+      <p>Targeting SWE, Data Engineering, and ML Engineering roles at <span class="gold">top-tier companies</span>.</p>
     </div>
-    <div class="about-stack reveal reveal-delay-2">
-      <div class="stack-group">
-        <div class="stack-label">Core ML</div>
-        <div class="stack-tags">
-          <span class="tag">Scikit-learn</span><span class="tag">TensorFlow</span><span class="tag">XGBoost</span>
-          <span class="tag">BERT</span><span class="tag">FAISS</span><span class="tag">SHAP</span>
-          <span class="tag">A/B Testing</span><span class="tag">Feature Engineering</span>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-label">Backend & Infrastructure</div>
-        <div class="stack-tags">
-          <span class="tag">Spring Boot</span><span class="tag">Flask</span><span class="tag">Redis</span>
-          <span class="tag">Kafka</span><span class="tag">PostgreSQL</span><span class="tag">MongoDB</span>
-          <span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">Terraform</span>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-label">Languages</div>
-        <div class="stack-tags">
-          <span class="tag">Python</span><span class="tag">Java</span><span class="tag">SQL</span>
-          <span class="tag">Bash</span><span class="tag">JavaScript</span>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-label">Data Engineering</div>
-        <div class="stack-tags">
-          <span class="tag">Apache Spark</span><span class="tag">Hadoop</span>
-          <span class="tag">ClickHouse</span><span class="tag">ETL/ELT</span><span class="tag">Parquet</span>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-label">Observability</div>
-        <div class="stack-tags">
-          <span class="tag">Prometheus</span><span class="tag">Grafana</span>
-          <span class="tag">OpenTelemetry</span><span class="tag">Structured Logging</span>
-        </div>
-      </div>
+    <div class="rv d2">
+      <div class="stack-group"><div class="stack-label">Core ML</div><div class="stack-tags"><span class="tag">Scikit-learn</span><span class="tag">TensorFlow</span><span class="tag">XGBoost</span><span class="tag">BERT</span><span class="tag">FAISS</span><span class="tag">SHAP</span><span class="tag">Optuna</span><span class="tag">MLflow</span></div></div>
+      <div class="stack-group"><div class="stack-label">Backend</div><div class="stack-tags"><span class="tag">Spring Boot</span><span class="tag">FastAPI</span><span class="tag">Redis</span><span class="tag">Kafka</span><span class="tag">PostgreSQL</span><span class="tag">MongoDB</span></div></div>
+      <div class="stack-group"><div class="stack-label">Data Engineering</div><div class="stack-tags"><span class="tag">Apache Spark</span><span class="tag">Delta Lake</span><span class="tag">Iceberg</span><span class="tag">Airflow</span><span class="tag">ClickHouse</span><span class="tag">Parquet</span></div></div>
+      <div class="stack-group"><div class="stack-label">Infra & Cloud</div><div class="stack-tags"><span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">Terraform</span><span class="tag">AWS EC2/S3/RDS</span><span class="tag">GitHub Actions</span></div></div>
+      <div class="stack-group"><div class="stack-label">Observability</div><div class="stack-tags"><span class="tag">OpenTelemetry</span><span class="tag">Prometheus</span><span class="tag">Grafana</span><span class="tag">TimescaleDB</span></div></div>
     </div>
   </div>
 </section>
 
-<!-- ── EXPERIENCE ─────────────────────────────── -->
+<!-- ══ EXPERIENCE ═════════════════════════════════════ -->
 <section id="experience">
   <div class="section-label" data-num="01">Experience</div>
-  <div class="section-title reveal">WORK<br>HISTORY</div>
+  <div class="section-title rv">WORK<br>HISTORY</div>
   <div class="exp-list">
-
-    <!-- Nitro Solutions -->
-    <div class="exp-item reveal">
+    <div class="exp-item rv">
       <div class="exp-meta">
         <div class="exp-period">Sep 2024 — Present</div>
         <div class="exp-company">Nitro Solutions</div>
         <div class="exp-loc">Paisley, UK</div>
       </div>
-      <div class="exp-content">
+      <div>
         <div class="exp-role">Software Development Engineer</div>
         <ul class="exp-bullets">
-          <li>Owned backend system design for retail platforms — making decisions around service boundaries, API contracts, and data consistency models under concurrent traffic.</li>
-          <li>Diagnosed and resolved p99 latency spikes by profiling query execution plans: eliminated N+1 patterns, added composite indexes on hot-path joins, and introduced Redis caching for catalogue reads — reducing p99 latency by ~20% without schema changes.</li>
-          <li>Designed ingestion pipeline (event capture → validation → transformation → storage) with idempotent writes and retry-safe consumers, reducing data inconsistencies by 30%.</li>
-          <li>Introduced API contract testing between backend and frontend teams, reducing integration regressions and improving release predictability across services.</li>
+          <li>Owned backend system design for retail platforms — service boundaries, API contracts, and data consistency under concurrent traffic.</li>
+          <li>Diagnosed p99 latency spikes by profiling query plans: eliminated N+1 patterns, added composite indexes, introduced Redis caching — <strong>~20% p99 latency reduction</strong> without schema changes.</li>
+          <li>Designed ingestion pipeline (event capture → validation → transformation → storage) with idempotent writes and retry-safe consumers — <strong>30% fewer data inconsistencies</strong>.</li>
+          <li>Introduced API contract testing between teams, reducing integration regressions across services.</li>
         </ul>
-        <div class="exp-tags">
-          <span class="exp-tag">Spring Boot</span><span class="exp-tag">Python</span>
-          <span class="exp-tag">PostgreSQL</span><span class="exp-tag">Redis</span>
-          <span class="exp-tag">Distributed Systems</span>
-        </div>
+        <div class="exp-tags"><span class="exp-tag">Spring Boot</span><span class="exp-tag">Python</span><span class="exp-tag">PostgreSQL</span><span class="exp-tag">Redis</span><span class="exp-tag">Distributed Systems</span></div>
       </div>
     </div>
-
-    <!-- DRG -->
-    <div class="exp-item reveal reveal-delay-1">
+    <div class="exp-item rv d1">
       <div class="exp-meta">
         <div class="exp-period">2023 — 2024</div>
         <div class="exp-company">DRG</div>
         <div class="exp-loc">Glasgow, UK</div>
       </div>
-      <div class="exp-content">
+      <div>
         <div class="exp-role">Junior Data Engineer</div>
         <ul class="exp-bullets">
-          <li>Designed and owned production Spark pipelines processing millions of records daily. Identified partition skew as the primary bottleneck through Spark UI profiling — repartitioned on high-cardinality keys and applied salting, cutting average job runtime by over 25%.</li>
-          <li>Built automated data-quality gates (schema validation, null-rate checks, referential integrity) as a pipeline stage, preventing bad data from propagating to analytics consumers and eliminating the manual remediation cycle entirely.</li>
-          <li>Implemented pipeline observability dashboards (SLA tracking, error rates, freshness metrics), significantly reducing incident diagnosis time.</li>
+          <li>Owned production Spark pipelines processing millions of records daily. Profiled partition skew via Spark UI, repartitioned on high-cardinality keys with salting — <strong>25% runtime reduction</strong>.</li>
+          <li>Built automated data-quality gates (schema validation, null-rate checks, referential integrity) as a pipeline stage — eliminated manual remediation cycle entirely.</li>
+          <li>Implemented pipeline observability dashboards (SLA tracking, error rates, freshness) — significantly reduced incident diagnosis time.</li>
         </ul>
-        <div class="exp-tags">
-          <span class="exp-tag">Apache Spark</span><span class="exp-tag">Hadoop</span>
-          <span class="exp-tag">ETL/ELT</span><span class="exp-tag">Grafana</span>
-          <span class="exp-tag">Pipeline Observability</span>
-        </div>
+        <div class="exp-tags"><span class="exp-tag">Apache Spark</span><span class="exp-tag">Hadoop</span><span class="exp-tag">ETL/ELT</span><span class="exp-tag">Grafana</span></div>
       </div>
     </div>
-
-    <!-- Modern Infotech -->
-    <div class="exp-item reveal reveal-delay-2">
+    <div class="exp-item rv d2">
       <div class="exp-meta">
         <div class="exp-period">Nov 2021 — Jul 2022</div>
-        <div class="exp-company">Modern Infotech Data Services</div>
+        <div class="exp-company">Modern Infotech</div>
         <div class="exp-loc">Chennai, India</div>
       </div>
-      <div class="exp-content">
+      <div>
         <div class="exp-role">Machine Learning Intern</div>
         <ul class="exp-bullets">
-          <li>Addressed the cold-start problem using a hybrid collaborative + content-based filtering approach, blending signals via a learned weighting layer — lifting new-user recommendation CTR by 25%.</li>
-          <li>A/B tested new search ranking signals (query-document co-occurrence, recency decay) against the production baseline, achieving a 15% NDCG improvement and establishing the offline evaluation framework adopted as team standard.</li>
-          <li>Fine-tuned a BERT-based intent classifier with task-specific data augmentation, raising classification accuracy by 20% and reducing virtual assistant fallback rate significantly.</li>
+          <li>Hybrid collaborative + content-based filtering for cold-start — lifted new-user recommendation CTR by <strong>25%</strong>.</li>
+          <li>A/B tested search ranking signals (co-occurrence, recency decay) — <strong>15% NDCG improvement</strong>; established offline eval framework as team standard.</li>
+          <li>Fine-tuned BERT intent classifier with data augmentation — <strong>20% accuracy gain</strong>, reduced VA fallback rate significantly.</li>
         </ul>
-        <div class="exp-tags">
-          <span class="exp-tag">TensorFlow</span><span class="exp-tag">BERT</span>
-          <span class="exp-tag">Collaborative Filtering</span>
-          <span class="exp-tag">NLP</span><span class="exp-tag">A/B Testing</span>
-        </div>
+        <div class="exp-tags"><span class="exp-tag">TensorFlow</span><span class="exp-tag">BERT</span><span class="exp-tag">NLP</span><span class="exp-tag">A/B Testing</span></div>
       </div>
     </div>
-
-    <!-- Early Engineering Experience -->
-    <div class="exp-item early-combined reveal reveal-delay-3">
-      <div class="exp-meta">
-        <div class="exp-period">2019 — 2022</div>
-        <div class="exp-company">Early Engineering Experience</div>
-        <div class="exp-loc">India</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-role">Internships & Projects</div>
-        <ul class="exp-bullets">
-          <li>Built backend services and REST APIs using Python (Flask/Django), supporting data ingestion and automation workflows across multiple internship engagements.</li>
-          <li>Developed web scraping and data processing pipelines using BeautifulSoup and Scrapy for structured data extraction at scale.</li>
-          <li>Implemented CI/CD pipelines and containerized applications using Docker; gained exposure to Kubernetes-based deployment workflows.</li>
-          <li>Applied clustering, forecasting, and recommendation techniques in data analysis projects, improving targeting and prediction accuracy in internal systems.</li>
-          <li>Worked with data visualization tools (Pandas, Matplotlib, Seaborn) to generate actionable insights from raw data for stakeholder reporting.</li>
-        </ul>
-        <div class="exp-tags">
-          <span class="exp-tag">Python</span><span class="exp-tag">Flask</span><span class="exp-tag">Django</span>
-          <span class="exp-tag">BeautifulSoup</span><span class="exp-tag">Scrapy</span>
-          <span class="exp-tag">Docker</span><span class="exp-tag">Kubernetes</span>
-          <span class="exp-tag">Pandas</span><span class="exp-tag">Scikit-learn</span>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
-<!-- ── DSA SECTION ────────────────────────────── -->
+<!-- ══ DSA ════════════════════════════════════════════ -->
 <section id="dsa">
   <div class="section-label" data-num="02">DSA</div>
-  <div class="section-title reveal">DATA STRUCTURES<br>& ALGORITHMS</div>
+  <div class="section-title rv">DATA STRUCTURES<br>& ALGORITHMS</div>
   <div class="dsa-inner">
-    <div class="dsa-stat-block reveal">
+    <div class="rv">
       <div class="dsa-big-num counter" data-target="500">0</div>
       <div class="dsa-label">Problems Solved</div>
-      <div class="dsa-categories">
-        <div class="dsa-cat">
-          <div class="dsa-cat-name">Arrays & Hashing</div>
-          <div class="dsa-cat-val">Mastered</div>
-        </div>
-        <div class="dsa-cat">
-          <div class="dsa-cat-name">Graphs</div>
-          <div class="dsa-cat-val">BFS · DFS · Dijkstra</div>
-        </div>
-        <div class="dsa-cat">
-          <div class="dsa-cat-name">Dynamic Programming</div>
-          <div class="dsa-cat-val">Tabulation · Memo</div>
-        </div>
-        <div class="dsa-cat">
-          <div class="dsa-cat-name">System Design</div>
-          <div class="dsa-cat-val">Fundamentals</div>
-        </div>
+      <div class="dsa-cats">
+        <div class="dsa-cat"><div class="dsa-cat-name">Arrays & Hashing</div><div class="dsa-cat-val">Mastered</div></div>
+        <div class="dsa-cat"><div class="dsa-cat-name">Graphs</div><div class="dsa-cat-val">BFS·DFS·Dijkstra</div></div>
+        <div class="dsa-cat"><div class="dsa-cat-name">Dynamic Programming</div><div class="dsa-cat-val">Tabulation·Memo</div></div>
+        <div class="dsa-cat"><div class="dsa-cat-name">System Design</div><div class="dsa-cat-val">Fundamentals</div></div>
       </div>
     </div>
-    <div class="dsa-body reveal reveal-delay-2">
-      <p>Solved <span class="gold">500+ problems</span> across <em>arrays</em>, <em>graphs</em>, <em>dynamic programming</em>, and <em>system design fundamentals</em> — spanning LeetCode, HackerRank, and competitive programming platforms.</p>
+    <div class="dsa-body rv d2">
+      <p>Solved <span class="gold">500+ problems</span> across <em>arrays</em>, <em>graphs</em>, <em>dynamic programming</em>, and <em>system design fundamentals</em> — LeetCode, HackerRank, and competitive programming.</p>
       <br>
-      <p>Strong focus on algorithmic complexity analysis, space-time trade-offs, and translating DSA principles into production system architecture decisions.</p>
+      <p>DSA isn't just competitive programming — it directly informs production architecture: choosing the right data structure, complexity analysis, and space-time trade-offs under real constraints.</p>
       <div class="dsa-platforms">
-        <a class="dsa-platform" href="https://leetcode.com/gowtham27rajendran-commits" target="_blank">LeetCode</a>
-        <span class="dsa-platform">HackerRank</span>
-        <span class="dsa-platform">Competitive Programming</span>
+        <a class="dsa-platform" href="https://leetcode.com/gowtham27rajendran-commits" target="_blank">LeetCode →</a>
+        <a class="dsa-platform" href="https://github.com/gowtham27rajendran-commits" target="_blank">GitHub →</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── PROJECTS ────────────────────────────────── -->
+<!-- ══ PROJECTS ═══════════════════════════════════════ -->
 <section id="projects">
   <div class="section-label" data-num="03">Projects</div>
-  <div class="section-title reveal">SELECTED<br>WORK</div>
+  <div class="section-title rv">ENGINEERING<br>DEEP DIVES</div>
+  <div class="faang-banner rv">
+    <span style="color:var(--gold);font-size:18px">★</span>
+    <span style="font-size:11px;color:var(--text2)"><strong>13 public repos</strong> — every project has architecture diagrams, performance benchmarks, CI/CD, and documented tradeoffs</span>
+    <a href="https://github.com/gowtham27rajendran-commits" target="_blank">View All on GitHub →</a>
+  </div>
 
-  <div class="projects-grid">
-
-    <div class="project-card project-card-wide reveal" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">01</div>
-      <div class="project-card-wide-inner">
-        <div>
-          <div class="project-category">System Design · Distributed Systems</div>
-          <div class="project-name">Distributed Order<br>Processing System</div>
-          <p class="project-desc">High-traffic e-commerce order processing using Kafka-based async execution to decouple order placement from inventory updates. Idempotency-key deduplication via Redis prevents duplicate orders under retries and network failures.</p>
-        </div>
-        <div>
-          <div class="project-tech">
-            <span>Kafka</span><span>Redis</span><span>Python</span><span>FastAPI</span><span>Docker</span>
-          </div>
-          <div class="project-insights">
-            <div class="insight-row"><span class="insight-label">Deduplication</span><span class="insight-val">Redis idempotency keys</span></div>
-            <div class="insight-row"><span class="insight-label">Semantics</span><span class="insight-val">At-least-once + safe reprocessing</span></div>
-            <div class="insight-row"><span class="insight-label">Fault tolerance</span><span class="insight-val">Dead-letter queue + retry pipeline</span></div>
-            <div class="insight-row"><span class="insight-label">Throughput</span><span class="insight-val">Async event-driven execution</span></div>
-          </div>
-        </div>
-      </div>
+<!-- ════════════════════════════════════════
+     PROJECT 01: DATA LAKEHOUSE
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">01</div></div>
+    <div class="pc-meta">
+      <div class="pc-faang">★ FAANG Pick — #1 Recommended</div>
+      <div class="pc-cat">Data Engineering · Lakehouse Architecture · Streaming</div>
+      <div class="pc-name">Data Lakehouse Pipeline</div>
+      <div class="pc-tagline">"Medallion Architecture — the same pattern powering Databricks, Netflix, and Uber data platforms."</div>
     </div>
-
-    <div class="project-card reveal" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">02</div>
-      <div class="project-category">System Design · Backend</div>
-      <div class="project-name">Distributed URL<br>Shortener</div>
-      <p class="project-desc">Production-grade URL shortening service with horizontal scalability. Token bucket rate limiting, Redis write-through cache, Base62 ID generation, async analytics via Kafka.</p>
-      <div class="project-tech">
-        <span>FastAPI</span><span>Redis</span><span>PostgreSQL</span><span>Kafka</span><span>Docker</span>
-      </div>
-      <div class="project-insights">
-        <div class="insight-row"><span class="insight-label">Latency target</span><span class="insight-val">sub-10ms p99</span></div>
-        <div class="insight-row"><span class="insight-label">Scale</span><span class="insight-val">100K+ redirects/day</span></div>
-        <div class="insight-row"><span class="insight-label">Key design</span><span class="insight-val">Base62 counter + cache-aside</span></div>
-      </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/data-lakehouse-pipeline" target="_blank">⬡ View on GitHub</a>
+      <a class="pc-gh-btn" href="https://github.com/gowtham27rajendran-commits/data-lakehouse-pipeline/blob/main/README.md" target="_blank">📄 README</a>
     </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">build</span><span class="br green">passing</span></div>
+    <div class="badge"><span class="bl">spark</span><span class="br blue">3.5</span></div>
+    <div class="badge"><span class="bl">delta lake</span><span class="br orange">ACID</span></div>
+    <div class="badge"><span class="bl">format</span><span class="br purple">Iceberg</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">Docker + AWS S3</span></div>
+    <div class="badge"><span class="bl">license</span><span class="br blue">MIT</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">Apache Spark 3.5</span><span class="t-tag">Delta Lake</span><span class="t-tag">Apache Iceberg</span><span class="t-tag">Apache Airflow</span><span class="t-tag">MinIO / S3</span><span class="t-tag">Trino</span><span class="t-tag">Python</span><span class="t-tag">Docker</span><span class="t-tag">Parquet</span><span class="t-tag">GitHub Actions</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre"><span class="at">RAW SOURCES</span>                            <span class="ab">SERVING LAYER</span>
+────────────                           ─────────────
+CDC streams ──┐                        BI Dashboards
+Kafka topics ─┤                        SQL Analysts
+REST APIs ────┤──▶ <span class="ag">BRONZE LAYER</span>        Data Scientists
+CSV/Parquet ──┘    (S3 / MinIO)
+                   │ Schema-on-write
+                   │ Append-only
+                   │ Raw + parsed
+                   │
+                   ▼ Spark Structured
+                   │ Streaming (5-min)
+                   │ Checkpoint recover
+                   │
+                   ▼ <span class="ag">SILVER LAYER</span>
+                   │ MERGE dedup (ACID)
+                   │ PII masking
+                   │ Schema evolution
+                   │ Z-order clustering
+                   │
+                   ▼ Airflow DAG
+                   │ (hourly batch)
+                   │
+                   ▼ <span class="ag">GOLD LAYER</span>
+              ┌────┴─────────────┐
+              │  Iceberg Tables  │
+              │  Fact + Dim (SCD2│
+              │  Bloom indexes   │
+              │  Time-travel     │
+              └──────┬───────────┘
+                     │
+             ┌───────┴────────┐
+             ▼                ▼
+        <span class="agr">Trino</span>          <span class="agr">Spark SQL</span>
+       (ad-hoc)       (scheduled)
 
-    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">03</div>
-      <div class="project-category">MLOps · Data Engineering</div>
-      <div class="project-name">Real-Time ML<br>Feature Store</div>
-      <p class="project-desc">Dual-store architecture: Redis online store for &lt;5ms inference, S3+Parquet offline store for batch training. Feature registry with semantic versioning and point-in-time join support.</p>
-      <div class="project-tech">
-        <span>Redis</span><span>Parquet</span><span>FastAPI</span><span>S3</span><span>Python</span>
+<span class="apu">Airflow DAG chain:</span>
+bronze_ingest ──▶ silver_transform ──▶ gold_aggregate
+     │                  │                    │
+  Sensor: S3        Sensor: silver       SLA alert
+  file landed       task complete        if delayed</pre>
       </div>
-      <div class="project-insights">
-        <div class="insight-row"><span class="insight-label">Online latency</span><span class="insight-val">&lt;5ms</span></div>
-        <div class="insight-row"><span class="insight-label">Key design</span><span class="insight-val">Dual-store + PIT joins</span></div>
-        <div class="insight-row"><span class="insight-label">Pattern</span><span class="insight-val">Write-through + pipeline batch</span></div>
-      </div>
-    </div>
 
-    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">04</div>
-      <div class="project-category">AI · NLP</div>
-      <div class="project-name">Semantic Search<br>Engine</div>
-      <p class="project-desc">Meaning-aware search using sentence embeddings + FAISS ANN index. Understands synonyms and context that keyword search misses. Hybrid BM25+semantic scoring via Reciprocal Rank Fusion.</p>
-      <div class="project-tech">
-        <span>FAISS</span><span>sentence-transformers</span><span>FastAPI</span><span>BM25</span>
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why Medallion over single-layer ETL?</strong> Separates concern: Bronze = raw audit trail, Silver = clean validated, Gold = business-ready. Each layer independently queryable and reprocessable.</li>
+          <li><strong>Why Delta Lake on Bronze/Silver?</strong> ACID transactions prevent partial writes from corrupting downstream. MERGE operation enables idempotent upserts — critical for exactly-once streaming.</li>
+          <li><strong>Why Apache Iceberg on Gold?</strong> Partition evolution without full table rewrite. Hidden partitioning. Time-travel with snapshot isolation. Cross-engine (Trino + Spark) interop.</li>
+          <li><strong>Why Airflow for orchestration?</strong> Sensor-based dependencies, SLA monitoring, backfill for any date range, and idempotent retries on failure — non-negotiable for production data pipelines.</li>
+        </ul>
       </div>
-      <div class="project-insights">
-        <div class="insight-row"><span class="insight-label">Model</span><span class="insight-val">all-MiniLM-L6-v2 (384-dim)</span></div>
-        <div class="insight-row"><span class="insight-label">Index</span><span class="insight-val">FAISS IVF (ANN)</span></div>
-        <div class="insight-row"><span class="insight-label">Ranking</span><span class="insight-val">RRF hybrid fusion</span></div>
-      </div>
-    </div>
 
-    <div class="project-card reveal reveal-delay-3" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">05</div>
-      <div class="project-category">ML · Streaming</div>
-      <div class="project-name">Real-Time Fraud<br>Detection</div>
-      <p class="project-desc">Three-layer decision system: rule engine (&lt;1ms) → XGBoost ML scorer → SHAP explainer. Velocity tracking, impossible-travel detection, and per-transaction explainability for regulatory compliance.</p>
-      <div class="project-tech">
-        <span>XGBoost</span><span>SHAP</span><span>Redis</span><span>Kafka</span><span>FastAPI</span>
-      </div>
-      <div class="project-insights">
-        <div class="insight-row"><span class="insight-label">Scoring latency</span><span class="insight-val">&lt;100ms</span></div>
-        <div class="insight-row"><span class="insight-label">Architecture</span><span class="insight-val">Rules → ML → SHAP</span></div>
-        <div class="insight-row"><span class="insight-label">Explainability</span><span class="insight-val">Per-transaction SHAP</span></div>
-      </div>
-    </div>
-
-    <div class="project-card project-card-wide reveal" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">06</div>
-      <div class="project-card-wide-inner">
-        <div>
-          <div class="project-category">Data Engineering · Infrastructure</div>
-          <div class="project-name">Log Analytics<br>Pipeline</div>
-          <p class="project-desc">End-to-end real-time log ingestion processing 1M+ events/day. Kafka → Spark Structured Streaming → ClickHouse OLAP with windowed aggregations, dead letter queue handling, and Grafana dashboards.</p>
-        </div>
-        <div>
-          <div class="project-tech">
-            <span>Kafka</span><span>Spark</span><span>ClickHouse</span><span>Grafana</span><span>Python</span>
-          </div>
-          <div class="project-insights">
-            <div class="insight-row"><span class="insight-label">Throughput</span><span class="insight-val">1M+ events/day</span></div>
-            <div class="insight-row"><span class="insight-label">Semantics</span><span class="insight-val">Exactly-once (Spark+Kafka)</span></div>
-            <div class="insight-row"><span class="insight-label">Storage</span><span class="insight-val">ClickHouse columnar OLAP</span></div>
-            <div class="insight-row"><span class="insight-label">Windows</span><span class="insight-val">5-min sliding, 2-min watermark</span></div>
+      <div class="sub-title">CI/CD + Cloud Deployment</div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions Pipeline</div>
+          <div class="infra-items">
+            <span class="infra-tag">pytest unit tests</span><span class="infra-tag">spark integration tests</span><span class="infra-tag">docker build</span><span class="infra-tag">push to ECR</span><span class="infra-tag">deploy to ECS</span>
           </div>
         </div>
+        <div class="infra-box">
+          <div class="infra-title">Cloud Stack (AWS)</div>
+          <div class="infra-items">
+            <span class="infra-tag">S3 (bronze/silver/gold)</span><span class="infra-tag">EMR Serverless (Spark)</span><span class="infra-tag">MWAA (Airflow)</span><span class="infra-tag">Glue Catalog</span><span class="infra-tag">Athena (ad-hoc)</span>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">07</div>
-      <div class="project-category">Backend · System Design</div>
-      <div class="project-name">Rate Limiter<br>as a Service</div>
-      <p class="project-desc">Four distributed rate limiting algorithms backed by Redis Lua scripts for atomicity. Token bucket, sliding window log, sliding window counter, fixed window — all deployable as middleware.</p>
-      <div class="project-tech">
-        <span>Redis Lua</span><span>FastAPI</span><span>Docker</span>
+    <div class="pc-right">
+      <div class="sub-title">Performance Metrics</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">TB</div><div class="m-unit">scale</div><div class="m-label">Daily Ingest</div></div>
+        <div class="m-box"><div class="m-num">&lt;5</div><div class="m-unit">min</div><div class="m-label">Freshness</div></div>
+        <div class="m-box"><div class="m-num">3–5×</div><div class="m-unit">faster</div><div class="m-label">Query Speed</div></div>
+        <div class="m-box"><div class="m-num">~70</div><div class="m-unit">% less</div><div class="m-label">Storage (vs JSON)</div></div>
       </div>
-      <div class="project-insights">
-        <div class="insight-row"><span class="insight-label">Algorithms</span><span class="insight-val">4 (token bucket + 3 more)</span></div>
-        <div class="insight-row"><span class="insight-label">Atomicity</span><span class="insight-val">Redis Lua scripts</span></div>
+      <div class="perf-wrap">
+        <div class="pb-row"><div class="pb-lr"><span>Query speed vs raw Parquet (Z-order + Bloom filters)</span><span class="pb-v">3–5×</span></div><div class="pb-bg"><div class="pb-fill" data-w="88"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Deduplication accuracy (MERGE hash)</span><span class="pb-v">99.99%</span></div><div class="pb-bg"><div class="pb-fill" data-w="99"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Storage compression vs raw JSON</span><span class="pb-v">~70% reduction</span></div><div class="pb-bg"><div class="pb-fill" data-w="85"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Data freshness (5-min microbatch)</span><span class="pb-v">&lt; 5 min</span></div><div class="pb-bg"><div class="pb-fill" data-w="95"></div></div></div>
+      </div>
+
+      <div class="sub-title">Where Latency & Bottlenecks Happen</div>
+      <div class="bottleneck">
+        <div class="bottleneck-title">Bottleneck Analysis</div>
+        <ul>
+          <li><strong>Small files problem:</strong> Streaming creates many tiny Parquet files. Solved with Spark OPTIMIZE + ZORDER scheduled via Airflow after each microbatch.</li>
+          <li><strong>Schema evolution lag:</strong> New columns in Bronze don't auto-propagate to Gold. Solved by registering schema changes in Glue Catalog and running schema migration DAG.</li>
+          <li><strong>Shuffle in Silver MERGE:</strong> Broadcast join hint used for small dimension tables; large fact tables repartitioned on entity_id before merge.</li>
+          <li><strong>Checkpoint overhead:</strong> Structured Streaming checkpoints to S3. High-frequency writes can throttle. Mitigated with checkpoint compaction and S3 bucket lifecycle rules.</li>
+        </ul>
+      </div>
+
+      <div class="sub-title">Key Implementation</div>
+      <div class="code-wrap">
+        <div class="code-title">delta_merge_silver.py — ACID upsert</div>
+        <pre class="code-pre"><span class="kw">def</span> <span class="fn">silver_upsert</span>(spark, bronze_path, silver_path):
+    bronze = spark.readStream.format(<span class="st">"delta"</span>).load(bronze_path)\
+        .withColumn(<span class="st">"row_hash"</span>, sha2(concat_ws(<span class="st">"|"</span>, *KEY_COLS), <span class="nm">256</span>))\
+        .filter(<span class="st">"event_ts IS NOT NULL AND user_id IS NOT NULL"</span>)
+
+    silver = DeltaTable.forPath(spark, silver_path)
+
+    <span class="kw">def</span> <span class="fn">merge_batch</span>(batch_df, batch_id):
+        silver.alias(<span class="st">"t"</span>).merge(batch_df.alias(<span class="st">"s"</span>),
+            <span class="st">"t.row_hash = s.row_hash"</span>)\
+        .whenNotMatchedInsertAll()\
+        .whenMatchedUpdate(
+            condition=<span class="st">"s.updated_at > t.updated_at"</span>,
+            set={<span class="st">"t.updated_at"</span>:<span class="st">"s.updated_at"</span>,<span class="st">"t.payload"</span>:<span class="st">"s.payload"</span>}
+        ).execute()
+
+    bronze.writeStream.foreachBatch(merge_batch)\
+        .option(<span class="st">"checkpointLocation"</span>, <span class="st">f"{silver_path}/_ckpt"</span>)\
+        .trigger(processingTime=<span class="st">"5 minutes"</span>).start()</pre>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">08</div>
-      <div class="project-category">MLOps · Automation</div>
-      <div class="project-name">AutoML<br>Pipeline</div>
-      <p class="project-desc">End-to-end automated ML: data validation → feature engineering → Bayesian HPO (Optuna) → training → SHAP evaluation → MLflow registry. 3x more efficient than grid search.</p>
-      <div class="project-tech">
-        <span>Optuna</span><span>MLflow</span><span>SHAP</span><span>Scikit-learn</span>
+<!-- ════════════════════════════════════════
+     PROJECT 02: DISTRIBUTED EVENT PLATFORM
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">02</div></div>
+    <div class="pc-meta">
+      <div class="pc-faang">★ FAANG Pick — #2 Recommended</div>
+      <div class="pc-cat">Distributed Systems · Event Streaming · Platform Engineering</div>
+      <div class="pc-name">Distributed Event Platform</div>
+      <div class="pc-tagline">"Same event-streaming backbone used at LinkedIn, Confluent, and Stripe."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/distributed-event-platform" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">build</span><span class="br green">passing</span></div>
+    <div class="badge"><span class="bl">kafka</span><span class="br blue">EOS</span></div>
+    <div class="badge"><span class="bl">schema</span><span class="br purple">Avro + Registry</span></div>
+    <div class="badge"><span class="bl">throughput</span><span class="br orange">100K evt/s</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">AWS ECS + MSK</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">Apache Kafka</span><span class="t-tag">Schema Registry</span><span class="t-tag">Avro</span><span class="t-tag">Python / FastAPI</span><span class="t-tag">Redis</span><span class="t-tag">OpenTelemetry</span><span class="t-tag">Docker / K8s</span><span class="t-tag">Prometheus</span><span class="t-tag">GitHub Actions</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre"><span class="at">PRODUCERS</span>           <span class="ag">KAFKA CLUSTER (3 brokers)</span>       <span class="ab">CONSUMERS</span>
+─────────           ──────────────────────────       ─────────
+Order Svc           Topic: orders.created           CG-A: Inventory
+Payment Svc ─Avro─▶ Topic: payments.done   ─────▶  CG-B: Analytics
+User Svc     (SR)   Topic: user.events              CG-C: Notification
+IoT Devices         Replication factor: 3
+
+<span class="apu">PRODUCER PATH:</span>
+  App ──▶ Avro serialize ──▶ Schema Registry validate
+      ──▶ begin_transaction ──▶ produce (acks=all)
+      ──▶ commit_transaction
+      [on failure] ──▶ abort_transaction ──▶ retry
+
+<span class="apu">CONSUMER PATH:</span>
+  Poll ──▶ deserialize ──▶ Redis dedup check (event_id TTL=24h)
+       ──▶ process ──▶ manual offset commit
+       [on error] ──▶ route to DLQ topic
+                  ──▶ enrich with error metadata
+
+<span class="ar">DEAD LETTER QUEUE:</span>
+  DLQ consumer ──▶ classify error ──▶ fix payload
+               ──▶ re-enqueue to original topic
+               ──▶ alert if DLQ depth > 1000
+
+<span class="apu">OBSERVABILITY:</span>
+  OTel spans: producer ──▶ broker ──▶ consumer (end-to-end)
+  Prometheus: lag_per_partition, throughput, error_rate
+  Alert: lag > 1000 → warning | lag > 10000 → page</pre>
       </div>
-      <div class="project-insights">
-        <div class="insight-row"><span class="insight-label">Search</span><span class="insight-val">Bayesian (TPE, Optuna)</span></div>
-        <div class="insight-row"><span class="insight-label">Registry</span><span class="insight-val">MLflow (versioned)</span></div>
+
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why Schema Registry + Avro?</strong> Enforces producer-consumer contracts at the byte level. BACKWARD compatibility means new producers can't break existing consumers — critical for multi-team platforms.</li>
+          <li><strong>Why EOS (transactional producers)?</strong> Without transactions, a crash between produce and offset commit causes duplicate processing. EOS guarantees exactly-once even across partitions and consumer groups.</li>
+          <li><strong>Why manual offset commit?</strong> Auto-commit marks messages as processed even if processing failed. Manual commit only after successful processing prevents data loss.</li>
+          <li><strong>Why Redis dedup on consumers?</strong> Even with EOS producers, consumer restarts can re-process. Redis TTL-based event_id check provides application-level idempotency as a second safety layer.</li>
+        </ul>
       </div>
     </div>
-
-    <div class="project-card reveal reveal-delay-1" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">09</div>
-      <div class="project-category">ML · Product</div>
-      <div class="project-name">Recommendation<br>Engine</div>
-      <p class="project-desc">Hybrid collaborative + content-based engine with A/B testing framework. Deterministic user-to-variant assignment via MD5 hash, ALS matrix factorisation, cold-start handling.</p>
-      <div class="project-tech">
-        <span>scipy SVD</span><span>Redis</span><span>FastAPI</span><span>NumPy</span>
+    <div class="pc-right">
+      <div class="sub-title">Performance Metrics</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">100K</div><div class="m-unit">evt/sec</div><div class="m-label">Peak Throughput</div></div>
+        <div class="m-box"><div class="m-num">&lt;200</div><div class="m-unit">ms</div><div class="m-label">Consumer Lag</div></div>
+        <div class="m-box"><div class="m-num">99.99</div><div class="m-unit">%</div><div class="m-label">Delivery</div></div>
+        <div class="m-box"><div class="m-num">&lt;30</div><div class="m-unit">sec</div><div class="m-label">DLQ Recovery</div></div>
       </div>
-      <div class="project-insights">
-        <div class="insight-row"><span class="insight-label">Algorithm</span><span class="insight-val">ALS + content hybrid</span></div>
-        <div class="insight-row"><span class="insight-label">A/B testing</span><span class="insight-val">Deterministic hash assignment</span></div>
+      <div class="perf-wrap">
+        <div class="pb-row"><div class="pb-lr"><span>Peak event throughput</span><span class="pb-v">100K+ events/sec</span></div><div class="pb-bg"><div class="pb-fill" data-w="92"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Consumer lag (steady state)</span><span class="pb-v">&lt; 200ms</span></div><div class="pb-bg"><div class="pb-fill" data-w="96"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Message delivery guarantee</span><span class="pb-v">99.99%</span></div><div class="pb-bg"><div class="pb-fill" data-w="99"></div></div></div>
+      </div>
+
+      <div class="sub-title">Bottlenecks Under Load</div>
+      <div class="bottleneck">
+        <div class="bottleneck-title">Failure Modes</div>
+        <ul>
+          <li><strong>Consumer group rebalance storm:</strong> Adding/removing consumers triggers full rebalance, causing processing pause. Solved with sticky partition assignment — rebalance window drops from minutes to seconds.</li>
+          <li><strong>Schema Registry as SPOF:</strong> If SR is down, producers can't serialize. Solved with SR caching in producer (cached schemas survive SR outages).</li>
+          <li><strong>DLQ saturation:</strong> Poison pill messages can fill DLQ. Rate limiting + circuit breaker on DLQ consumer. PagerDuty alert at depth threshold.</li>
+        </ul>
+      </div>
+
+      <div class="sub-title">CI/CD + Cloud</div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">pytest</span><span class="infra-tag">kafka integration tests</span><span class="infra-tag">docker build + push ECR</span><span class="infra-tag">deploy ECS</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">MSK (Managed Kafka)</span><span class="infra-tag">ECS Fargate</span><span class="infra-tag">ElastiCache Redis</span><span class="infra-tag">CloudWatch alarms</span></div>
+        </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="project-card reveal reveal-delay-2" onclick="window.open('https://github.com/gowtham27rajendran-commits','_blank')">
-      <div class="project-num">10</div>
-      <div class="project-category">Infrastructure · DevOps</div>
-      <div class="project-name">Observability<br>Platform</div>
-      <p class="project-desc">Three pillars of observability in one: metrics (counters/gauges/histograms), distributed traces (OpenTelemetry spans), and multi-window alerting with severity-based routing.</p>
-      <div class="project-tech">
-        <span>OpenTelemetry</span><span>FastAPI</span><span>TimescaleDB</span><span>Python</span>
+<!-- ════════════════════════════════════════
+     PROJECT 03: FEATURE STORE
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">03</div></div>
+    <div class="pc-meta">
+      <div class="pc-faang">★ FAANG Pick — #3 MLOps</div>
+      <div class="pc-cat">MLOps · Feature Engineering · ML Infrastructure</div>
+      <div class="pc-name">Distributed Feature Store</div>
+      <div class="pc-tagline">"Same design as Uber Michelangelo, Meta FBLearner, and Airbnb Zipline."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/distributed-feature-store" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">build</span><span class="br green">passing</span></div>
+    <div class="badge"><span class="bl">online latency</span><span class="br teal">&lt;5ms p99</span></div>
+    <div class="badge"><span class="bl">skew</span><span class="br green">eliminated</span></div>
+    <div class="badge"><span class="bl">joins</span><span class="br purple">PIT correct</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">AWS Redis + S3</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">Redis Cluster</span><span class="t-tag">S3 + Parquet</span><span class="t-tag">FastAPI</span><span class="t-tag">Apache Airflow</span><span class="t-tag">Feast</span><span class="t-tag">Apache Spark</span><span class="t-tag">Delta Lake</span><span class="t-tag">Python</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre">          <span class="apu">FEATURE REGISTRY</span>
+     (definitions, versions, lineage)
+               │
+    ┌──────────┴──────────┐
+    ▼                     ▼
+<span class="ag">BATCH PIPELINE</span>         <span class="ag">STREAM PIPELINE</span>
+(Airflow + Spark)      (Kafka consumer)
+    │                     │
+    ▼                     ▼
+<span class="ab">OFFLINE STORE</span>        <span class="ar">ONLINE STORE</span>
+S3 / Parquet         Redis Cluster
+                          │
+                    HMGET entity:{id}
+                    → all features
+                    → 1 RTT latency
+    │                     │
+    ▼                     ▼
+ML Training          Inference API
+(PIT join)           (sub-5ms budget)
+
+<span class="apu">POINT-IN-TIME JOIN (prevents target leakage):</span>
+  labels: (entity_id, label_timestamp, label)
+  features: (entity_id, feature_timestamp, feature_*)
+
+  For each label row, find the most recent feature
+  snapshot WHERE feature_timestamp ≤ label_timestamp
+
+  ❌ WITHOUT PIT: future feature values leak in
+  ✅ WITH PIT: model only sees data it would have
+               had at prediction time
+
+<span class="apu">DRIFT MONITOR:</span>
+  Z-score alert if feature > 3σ from 30-day mean
+  PSI alert if distribution shift > 0.2</pre>
       </div>
-      <div class="project-insights">
-        <div class="insight-row"><span class="insight-label">Pillars</span><span class="insight-val">Metrics · Traces · Alerts</span></div>
-        <div class="insight-row"><span class="insight-label">Alerting</span><span class="insight-val">Multi-window, sustained</span></div>
+
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why dual-store (Redis + S3)?</strong> Online inference requires sub-5ms. S3 can't do that. S3 has TB-scale storage for training. Redis has TTL per feature. Two different access patterns → two stores.</li>
+          <li><strong>Why point-in-time joins?</strong> The most common silent ML bug. Without PIT, a feature computed at T+1 leaks into a label at T, making the model cheat during training and fail in production.</li>
+          <li><strong>Why semantic versioning on features?</strong> Models pin to specific feature versions. A breaking change (type change, logic change) requires a version bump. Consumers declare what they were trained on.</li>
+          <li><strong>Why PSI for drift?</strong> PSI measures distribution shift vs training baseline — not just mean shift. PSI > 0.2 = significant distribution change, indicating the model is operating out-of-distribution.</li>
+        </ul>
       </div>
     </div>
+    <div class="pc-right">
+      <div class="sub-title">Performance Metrics</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">&lt;5</div><div class="m-unit">ms p99</div><div class="m-label">Online Read</div></div>
+        <div class="m-box"><div class="m-num">&lt;60</div><div class="m-unit">sec</div><div class="m-label">Feature Freshness</div></div>
+        <div class="m-box"><div class="m-num">0</div><div class="m-unit">skew</div><div class="m-label">Train/Serve</div></div>
+        <div class="m-box"><div class="m-num">&lt;15</div><div class="m-unit">min</div><div class="m-label">PIT Join 10M rows</div></div>
+      </div>
+      <div class="perf-wrap">
+        <div class="pb-row"><div class="pb-lr"><span>Online feature read (Redis pipeline)</span><span class="pb-v">&lt;5ms p99</span></div><div class="pb-bg"><div class="pb-fill" data-w="97"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Feature freshness (streaming)</span><span class="pb-v">&lt; 60s</span></div><div class="pb-bg"><div class="pb-fill" data-w="92"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>PIT join, 10M rows (Spark)</span><span class="pb-v">&lt; 15 min</span></div><div class="pb-bg"><div class="pb-fill" data-w="84"></div></div></div>
+      </div>
+      <div class="sub-title">Bottlenecks</div>
+      <div class="bottleneck">
+        <div class="bottleneck-title">Failure Modes</div>
+        <ul>
+          <li><strong>Redis memory pressure:</strong> High-cardinality entity space. TTL per feature type (session: 30min, user profile: 7d) controls memory. Redis Cluster shards by entity_id.</li>
+          <li><strong>PIT join shuffle:</strong> Joining labels × features is a cross-join before filtering. Spark broadcast hint for small label sets; partition pruning on entity_id for large ones.</li>
+          <li><strong>Feature skew (silent bug):</strong> PSI monitoring detects if live feature distribution diverges from training baseline before model degradation is visible in metrics.</li>
+        </ul>
+      </div>
+      <div class="sub-title">CI/CD + Cloud</div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">unit + integration tests</span><span class="infra-tag">docker build</span><span class="infra-tag">push ECR</span><span class="infra-tag">deploy Lambda + ECS</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">ElastiCache Redis</span><span class="infra-tag">S3 (offline store)</span><span class="infra-tag">EMR Serverless</span><span class="infra-tag">MWAA</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- ════════════════════════════════════════
+     PROJECT 04: FRAUD DETECTION
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">04</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">ML · Real-Time Streaming · Explainable AI</div>
+      <div class="pc-name">Real-Time Fraud Detection</div>
+      <div class="pc-tagline">"Three-layer decision: rules + ML + regulatory-grade SHAP explainability."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/7-fraud-detection" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">latency</span><span class="br teal">&lt;100ms e2e</span></div>
+    <div class="badge"><span class="bl">precision</span><span class="br green">96.2% @0.7</span></div>
+    <div class="badge"><span class="bl">features</span><span class="br orange">150+</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">AWS Lambda + SQS</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">XGBoost</span><span class="t-tag">SHAP TreeExplainer</span><span class="t-tag">Redis</span><span class="t-tag">Kafka</span><span class="t-tag">FastAPI</span><span class="t-tag">Python</span><span class="t-tag">Docker</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre"><span class="at">Transaction event</span> ──▶ <span class="ag">Kafka: txn.stream</span>
+                               │
+                               ▼
+                    <span class="ab">LAYER 1: Rule Engine</span>  &lt;1ms
+                    Redis counters (velocity)
+                    ┌─────────────────────┐
+                    │ • Velocity: &gt;10 txn │
+                    │   in 60s → flag     │
+                    │ • Impossible travel │
+                    │   &gt;900km/hr →block  │
+                    │ • Blocklist lookup  │
+                    │ • Amount limits     │
+                    └──────────┬──────────┘
+                               │
+                    <span class="ar">FRAUD?</span> ──YES──▶ <span class="ar">BLOCK + Kafka DLQ</span>
+                               │ NO
+                               ▼
+                    <span class="ab">LAYER 2: XGBoost</span>   &lt;50ms
+                    150+ features:
+                    ├── amount_zscore (30d)
+                    ├── merchant_risk_score
+                    ├── txn_hour_pattern
+                    ├── device_fingerprint
+                    └── velocity_features
+                               │
+                    score&lt;0.4 ──▶ <span class="agr">APPROVE</span>
+                    score&gt;0.7 ──▶ <span class="ar">BLOCK</span>
+                    0.4–0.7 ────▶ LAYER 3
+                               │
+                               ▼
+                    <span class="ab">LAYER 3: SHAP</span>      &lt;30ms
+                    TreeExplainer
+                    Per-txn report:
+                    ├── top-5 contributing features
+                    ├── contribution % each
+                    └── human-readable reason
+                               │
+                    <span class="agr">Compliance DB + Audit Trail</span></pre>
+      </div>
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why 3 layers?</strong> Layer 1 catches obvious fraud in &lt;1ms without touching the model. Saves compute for genuine edge cases. Layer 3 only activates for uncertain scores, keeping p99 low.</li>
+          <li><strong>Why SHAP for compliance?</strong> Regulatory bodies (GDPR, PSD2) require explainable decisions. "ML said no" isn't acceptable. SHAP gives auditable, per-transaction reasons that withstand legal scrutiny.</li>
+          <li><strong>Why Redis for velocity?</strong> Sliding window counters in Redis (INCR + EXPIRE) are &lt;1ms. Postgres would be 10–50ms for the same query, unacceptable in a payment path.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Performance Metrics</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">&lt;1</div><div class="m-unit">ms</div><div class="m-label">Rule Engine</div></div>
+        <div class="m-box"><div class="m-num">&lt;50</div><div class="m-unit">ms</div><div class="m-label">XGBoost Score</div></div>
+        <div class="m-box"><div class="m-num">96.2</div><div class="m-unit">%</div><div class="m-label">Precision @0.7</div></div>
+        <div class="m-box"><div class="m-num">0.8</div><div class="m-unit">%</div><div class="m-label">False Positive</div></div>
+      </div>
+      <div class="perf-wrap">
+        <div class="pb-row"><div class="pb-lr"><span>Rule engine</span><span class="pb-v">&lt;1ms</span></div><div class="pb-bg"><div class="pb-fill" data-w="99"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>XGBoost scoring</span><span class="pb-v">&lt;50ms</span></div><div class="pb-bg"><div class="pb-fill" data-w="93"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Precision at 0.7 threshold</span><span class="pb-v">96.2%</span></div><div class="pb-bg"><div class="pb-fill" data-w="96"></div></div></div>
+      </div>
+      <div class="sub-title">Bottlenecks</div>
+      <div class="bottleneck">
+        <div class="bottleneck-title">Failure Modes</div>
+        <ul>
+          <li><strong>SHAP inference cost:</strong> TreeExplainer adds ~30ms. Only invoked in middle band (0.4–0.7 scores, ~12% of traffic). Saves compute for clear cases.</li>
+          <li><strong>Feature freshness for velocity:</strong> Redis counters must be current. If consumer lag spikes, velocity features lag. Alert on lag &gt; 5s in payment path.</li>
+          <li><strong>Model staleness:</strong> XGBoost trained on historical data drifts. MLflow registry triggers retraining when PSI &gt; 0.15 on input features.</li>
+        </ul>
+      </div>
+      <div class="sub-title">CI/CD + Cloud</div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">model unit tests</span><span class="infra-tag">SHAP regression tests</span><span class="infra-tag">docker build</span><span class="infra-tag">deploy Lambda</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">Lambda (rule engine)</span><span class="infra-tag">SageMaker (XGBoost)</span><span class="infra-tag">ElastiCache Redis</span><span class="infra-tag">MSK Kafka</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 05: URL SHORTENER
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">05</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">System Design · Backend · Distributed Systems</div>
+      <div class="pc-name">Distributed URL Shortener</div>
+      <div class="pc-tagline">"Sub-10ms p99 redirect at 100K+ req/day — horizontal scaling, async analytics."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/1-distributed-url-shortener" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">latency</span><span class="br teal">&lt;10ms p99</span></div>
+    <div class="badge"><span class="bl">scale</span><span class="br blue">100K req/day</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">AWS EC2 + RDS</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">FastAPI</span><span class="t-tag">Redis</span><span class="t-tag">PostgreSQL</span><span class="t-tag">Kafka</span><span class="t-tag">Docker</span><span class="t-tag">Nginx</span><span class="t-tag">GitHub Actions</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre">User ──▶ Nginx LB ──▶ FastAPI (stateless)
+                            │
+              ┌─────────────┴──────────────┐
+              │ CREATE short URL           │
+              ├────────────────────────────┤
+              │ 1. Rate limit check         │
+              │    Redis: INCR + EXPIRE     │
+              │    Token bucket (Lua atom)  │
+              │ 2. Generate Base62 ID       │
+              │    Atomic counter from DB   │
+              │    Counter → Base62 encode  │
+              │ 3. Write to Postgres (RDS)  │
+              │ 4. Write-through to Redis   │
+              │    TTL = 7 days             │
+              └─────────────┬──────────────┘
+                            │
+              ┌─────────────┴──────────────┐
+              │ REDIRECT (hot path)         │
+              ├────────────────────────────┤
+              │ 1. Redis lookup (cache-hit) │ &lt;1ms
+              │    HIT → 301 redirect       │
+              │    MISS → Postgres lookup   │ ~5ms
+              │       → warm Redis cache   │
+              │       → 301 redirect        │
+              │ 2. Async: Kafka event       │
+              │    analytics.click topic    │
+              └─────────────┬──────────────┘
+                            │
+             <span class="apu">ANALYTICS PIPELINE</span>
+             Kafka ──▶ consumer ──▶ ClickHouse
+             (async, doesn't block redirect)</pre>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why Base62 not UUID?</strong> UUIDs are 36 chars. Base62 encodes a counter to 6–8 chars. Short = better UX, less storage, faster hash lookup. Atomic DB counter prevents collisions without distributed coordination.</li>
+          <li><strong>Why write-through cache?</strong> Writes go to both Redis and Postgres atomically. Redis serves all reads. Cache miss → DB fallback → re-warm. This achieves &lt;10ms p99 even without pre-warming.</li>
+          <li><strong>Why Kafka for analytics?</strong> Click counting is not in the redirect hot path. Async Kafka event means the redirect returns in &lt;5ms regardless of analytics load.</li>
+          <li><strong>Where latency happens:</strong> Cache miss hits Postgres (~5ms). Hot URLs always hit Redis (&lt;1ms). Cold start after deployment until cache warms = only time p99 degrades.</li>
+        </ul>
+      </div>
+      <div class="sub-title">Performance + CI/CD</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">&lt;1</div><div class="m-unit">ms</div><div class="m-label">Cache Hit</div></div>
+        <div class="m-box"><div class="m-num">&lt;10</div><div class="m-unit">ms p99</div><div class="m-label">Redirect</div></div>
+        <div class="m-box"><div class="m-num">0</div><div class="m-unit">races</div><div class="m-label">Lua Atomic</div></div>
+        <div class="m-box"><div class="m-num">100K</div><div class="m-unit">req/day</div><div class="m-label">Design Target</div></div>
+      </div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions CI/CD</div>
+          <div class="infra-items"><span class="infra-tag">pytest</span><span class="infra-tag">locust load test</span><span class="infra-tag">docker build</span><span class="infra-tag">deploy EC2</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">EC2 (FastAPI)</span><span class="infra-tag">RDS PostgreSQL</span><span class="infra-tag">ElastiCache Redis</span><span class="infra-tag">Route53</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 06: SEMANTIC SEARCH
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">06</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">AI · NLP · Vector Search</div>
+      <div class="pc-name">Semantic Search Engine</div>
+      <div class="pc-tagline">"Hybrid dense + sparse retrieval with Reciprocal Rank Fusion — meaning-aware search."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/3-semantic-search-engine" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">recall@10</span><span class="br green">94%</span></div>
+    <div class="badge"><span class="bl">latency</span><span class="br teal">&lt;30ms</span></div>
+    <div class="badge"><span class="bl">model</span><span class="br purple">MiniLM-L6-v2</span></div>
+    <div class="badge"><span class="bl">index</span><span class="br orange">FAISS IVF</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">FAISS</span><span class="t-tag">sentence-transformers</span><span class="t-tag">FastAPI</span><span class="t-tag">BM25 (rank_bm25)</span><span class="t-tag">NumPy</span><span class="t-tag">Docker</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre">Query: <span class="at">"fast database for analytics"</span>
+
+DUAL RETRIEVAL PATH:
+        │
+   ┌────┴──────────────────────┐
+   ▼                           ▼
+<span class="ag">DENSE RETRIEVAL</span>          <span class="ab">SPARSE RETRIEVAL</span>
+MiniLM-L6-v2              BM25 (TF-IDF)
+384-dim embed             keyword match
+FAISS IVF ANN             inverted index
+cosine similarity         exact term freq
+   │                           │
+   ▼                           ▼
+[ClickHouse:0.91]         [clickhouse:12.3]
+[DuckDB:0.88]             [fast db:9.1]
+[DynamoDB:0.85]           [analytics:8.7]
+   │                           │
+   └───────────┬───────────────┘
+               ▼
+   <span class="apu">Reciprocal Rank Fusion</span>
+   score = Σ 1 / (k + rank_i)
+   k=60 (smoothing constant)
+               │
+               ▼
+   Re-ranked merged results
+   Best of semantic + keyword
+
+<span class="apu">INDEXING PIPELINE:</span>
+  Documents ──▶ MiniLM embed ──▶ FAISS IVF train
+             ──▶ BM25 tokenize ──▶ inverted index
+             (run on ingestion, not at query time)</pre>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why FAISS IVF not exact search?</strong> Exact k-NN is O(n·d). IVF clusters vectors into buckets, searches only nearby clusters. 10–100× faster with &lt;5% recall loss at scale.</li>
+          <li><strong>Why hybrid (dense + sparse)?</strong> Dense retrieval misses exact keyword matches ("CVE-2024-1234"). Sparse retrieval misses semantic matches ("fast DB" ≠ "high-performance database"). RRF captures both.</li>
+          <li><strong>Why RRF over score fusion?</strong> Dense (cosine 0–1) and sparse (BM25 0–∞) scores are incomparable scales. RRF uses rank positions, which are scale-invariant. More robust than score normalization.</li>
+          <li><strong>Where latency happens:</strong> Embedding inference (~8ms on CPU). FAISS IVF search (~3ms). BM25 lookup (~1ms). RRF merge (~0.5ms). Total ~12ms. GPU drops embed to &lt;2ms.</li>
+        </ul>
+      </div>
+      <div class="sub-title">Performance Metrics</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">94</div><div class="m-unit">%</div><div class="m-label">Recall@10</div></div>
+        <div class="m-box"><div class="m-num">&lt;30</div><div class="m-unit">ms</div><div class="m-label">Query Latency</div></div>
+        <div class="m-box"><div class="m-num">384</div><div class="m-unit">dim</div><div class="m-label">Embedding</div></div>
+        <div class="m-box"><div class="m-num">IVF</div><div class="m-unit">ANN</div><div class="m-label">Index Type</div></div>
+      </div>
+      <div class="sub-title">CI/CD + Cloud</div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">recall@10 regression test</span><span class="infra-tag">latency benchmark</span><span class="infra-tag">docker build + ECR</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">ECS Fargate</span><span class="infra-tag">S3 (FAISS index)</span><span class="infra-tag">EC2 G4 (GPU embed)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 07: LOG ANALYTICS
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">07</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">Data Engineering · Real-Time Streaming</div>
+      <div class="pc-name">Log Analytics Pipeline</div>
+      <div class="pc-tagline">"Kafka → Spark Streaming → ClickHouse OLAP — 1M+ events/day, exactly-once."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/4-log-analytics-pipeline" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">throughput</span><span class="br blue">1M+ evt/day</span></div>
+    <div class="badge"><span class="bl">semantics</span><span class="br green">exactly-once</span></div>
+    <div class="badge"><span class="bl">storage</span><span class="br orange">ClickHouse OLAP</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">AWS MSK + EMR</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">Apache Kafka</span><span class="t-tag">Spark Structured Streaming</span><span class="t-tag">ClickHouse</span><span class="t-tag">Grafana</span><span class="t-tag">Python</span><span class="t-tag">Docker</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre"><span class="at">Log Sources</span>
+App servers ──┐
+Nginx access ─┤──▶ <span class="ag">Kafka: logs.raw</span>
+Lambda funcs ─┘    (partitioned by service)
+                         │
+                         ▼
+                  <span class="ag">Spark Structured Streaming</span>
+                  ┌──────────────────────┐
+                  │ readStream (Kafka)    │
+                  │ watermark: 2 minutes  │
+                  │ sliding window: 5min  │
+                  │                      │
+                  │ transforms:          │
+                  │ • parse JSON         │
+                  │ • extract fields     │
+                  │ • count by level     │
+                  │ • p99 latency agg    │
+                  │ • error rate %       │
+                  │                      │
+                  │ DLQ: unparseable     │
+                  │ → logs.malformed     │
+                  └──────────┬───────────┘
+                             │ exactly-once
+                             │ checkpoint
+                             ▼
+                  <span class="ab">ClickHouse MergeTree</span>
+                  Partitioned by date
+                  Sorted by service, level
+                             │
+                  ┌──────────┴──────────┐
+                  ▼                     ▼
+              <span class="agr">Grafana</span>            REST API
+              Dashboards          (ad-hoc SQL)
+              SLA alerts          JSON response</pre>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why ClickHouse over Postgres?</strong> Columnar storage for analytics. 100× faster aggregation queries on time-series data. Postgres would require table partitioning, ClickHouse handles it natively with MergeTree.</li>
+          <li><strong>Why 2-min watermark?</strong> Logs arrive out-of-order (network retries, buffering). Watermark tells Spark to wait 2min before closing a window — handles late data without holding state forever.</li>
+          <li><strong>Why exactly-once (not at-least-once)?</strong> Duplicate log entries would inflate error rate metrics, triggering false alerts. Exactly-once via Spark+Kafka checkpoint ensures accurate dashboards.</li>
+        </ul>
+      </div>
+      <div class="sub-title">Performance + CI/CD</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">1M</div><div class="m-unit">evt/day</div><div class="m-label">Throughput</div></div>
+        <div class="m-box"><div class="m-num">5min</div><div class="m-unit">window</div><div class="m-label">Aggregation</div></div>
+        <div class="m-box"><div class="m-num">2min</div><div class="m-unit">watermark</div><div class="m-label">Late Data</div></div>
+        <div class="m-box"><div class="m-num">EOS</div><div class="m-unit">guarantee</div><div class="m-label">Exactly-Once</div></div>
+      </div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">spark unit tests</span><span class="infra-tag">pipeline integration test</span><span class="infra-tag">docker build + ECR</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">MSK (Kafka)</span><span class="infra-tag">EMR Serverless</span><span class="infra-tag">EC2 (ClickHouse)</span><span class="infra-tag">Grafana Cloud</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 08: RATE LIMITER
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">08</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">Backend · System Design · Redis Internals</div>
+      <div class="pc-name">Rate Limiter as a Service</div>
+      <div class="pc-tagline">"4 algorithms, atomic Lua scripts, zero race conditions — deployable as middleware."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/5-rate-limiter-service" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">latency</span><span class="br teal">&lt;1ms</span></div>
+    <div class="badge"><span class="bl">algorithms</span><span class="br purple">4</span></div>
+    <div class="badge"><span class="bl">atomicity</span><span class="br green">Redis Lua</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">AWS Lambda + Redis</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">Redis Lua</span><span class="t-tag">FastAPI</span><span class="t-tag">Docker</span><span class="t-tag">Python</span><span class="t-tag">GitHub Actions</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design + Algorithm Comparison</div>
+      <div class="arch-wrap">
+<pre class="arch-pre">Request ──▶ Rate Limiter Middleware
+                  │
+                  ▼ Redis Lua (atomic)
+    ┌─────────────────────────────┐
+    │  Algorithm dispatch by key  │
+    │  key = f(user_id, endpoint) │
+    └──────────┬──────────────────┘
+               │
+   ┌───────────┼───────────┬──────────────┐
+   ▼           ▼           ▼              ▼
+<span class="ag">TOKEN</span>    <span class="ab">SLIDING</span>   <span class="ag">SLIDING</span>      <span class="apu">FIXED</span>
+<span class="ag">BUCKET</span>   <span class="ab">LOG</span>       <span class="ag">COUNTER</span>      <span class="apu">WINDOW</span>
+  │          │           │              │
+Allows    Sorted     2 counters    1 counter
+bursts    set of     cur+prev      per window
+          timestamps  window       resets at
+refill                weighted     boundary
+at rate               blend
+
+<span class="apu">WHY LUA SCRIPTS (not plain Redis)?</span>
+  Problem: GET → check → SET has race window
+  Thread A reads: 99/100 requests
+  Thread B reads: 99/100 requests
+  Both write: 100/100 (should be 101!)
+
+  Lua executes ATOMICALLY in Redis server
+  GET + check + SET = 1 atomic operation
+  Zero race conditions, works across app servers</pre>
+      </div>
+      <div class="sub-title">Algorithm Trade-offs</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Token bucket:</strong> Allows burst up to bucket size. Best for APIs that tolerate short spikes. O(1) space: just (tokens, last_refill) per key.</li>
+          <li><strong>Sliding window log:</strong> 100% accurate — no boundary spike. Stores all request timestamps in sorted set. O(n) space — expensive for high-rate APIs.</li>
+          <li><strong>Sliding window counter:</strong> O(1) space. ~5% error vs log. Weighted blend of current + previous window counts. Best for high-throughput services.</li>
+          <li><strong>Fixed window:</strong> Simplest. Vulnerable to boundary burst (2× rate at window edge). Use only when strict accuracy isn't required.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Performance Metrics</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">&lt;1</div><div class="m-unit">ms</div><div class="m-label">Check Latency</div></div>
+        <div class="m-box"><div class="m-num">4</div><div class="m-unit">algos</div><div class="m-label">Implementations</div></div>
+        <div class="m-box"><div class="m-num">0</div><div class="m-unit">races</div><div class="m-label">Atomic Lua</div></div>
+        <div class="m-box"><div class="m-num">MW</div><div class="m-unit">ready</div><div class="m-label">Plug-in</div></div>
+      </div>
+      <div class="perf-wrap">
+        <div class="pb-row"><div class="pb-lr"><span>Rate check latency (Redis Lua)</span><span class="pb-v">&lt;1ms</span></div><div class="pb-bg"><div class="pb-fill" data-w="99"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Sliding log accuracy vs ideal</span><span class="pb-v">100%</span></div><div class="pb-bg"><div class="pb-fill" data-w="100"></div></div></div>
+        <div class="pb-row"><div class="pb-lr"><span>Sliding counter accuracy vs log</span><span class="pb-v">~95%</span></div><div class="pb-bg"><div class="pb-fill" data-w="95"></div></div></div>
+      </div>
+      <div class="sub-title">CI/CD + Cloud</div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">concurrency race tests</span><span class="infra-tag">algorithm accuracy benchmarks</span><span class="infra-tag">docker build</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">Lambda (middleware)</span><span class="infra-tag">ElastiCache Redis</span><span class="infra-tag">API Gateway</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 09: AUTOML
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">09</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">MLOps · Automation · Experiment Tracking</div>
+      <div class="pc-name">AutoML Pipeline</div>
+      <div class="pc-tagline">"Bayesian HPO + MLflow registry + SHAP eval — 3× faster than grid search."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/6-automl-pipeline" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">hpo</span><span class="br purple">Bayesian TPE</span></div>
+    <div class="badge"><span class="bl">registry</span><span class="br blue">MLflow</span></div>
+    <div class="badge"><span class="bl">efficiency</span><span class="br green">3× vs grid</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">Optuna</span><span class="t-tag">MLflow</span><span class="t-tag">SHAP</span><span class="t-tag">Scikit-learn</span><span class="t-tag">XGBoost</span><span class="t-tag">Python</span><span class="t-tag">Docker</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">Pipeline Flow</div>
+      <div class="arch-wrap">
+<pre class="arch-pre">Raw data
+   │
+   ▼ <span class="ag">Data Validation</span>
+   │ Schema check, null rate,
+   │ distribution assertions
+   │ Fail fast → alert
+   │
+   ▼ <span class="ag">Feature Engineering</span>
+   │ Numeric: StandardScaler
+   │ Categorical: TargetEncoder
+   │ Time: lag features, rolling
+   │
+   ▼ <span class="apu">Bayesian HPO (Optuna TPE)</span>
+   │ n_trials=100 (vs 1000 grid)
+   │ Pruner: MedianPruner (early stop)
+   │ Sampler: TPESampler
+   │ Objective: maximize CV F1
+   │
+   ▼ <span class="ag">Best model training</span>
+   │ Cross-validation (5-fold)
+   │ Hold-out test evaluation
+   │
+   ▼ <span class="ab">SHAP Evaluation</span>
+   │ TreeExplainer
+   │ Global feature importance
+   │ Interaction effects
+   │
+   ▼ <span class="ag">MLflow Registry</span>
+   │ Log: params, metrics, model
+   │ Version: staging → production
+   │ Artifacts: SHAP plots, CV results
+   │
+   ▼ Production model serving</pre>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why Bayesian HPO over grid search?</strong> Grid search is O(n^k) combinations. Bayesian TPE builds a probabilistic model of which hyperparameter regions are promising, converging in 3× fewer trials.</li>
+          <li><strong>Why MedianPruner?</strong> Stops unpromising trials early based on intermediate F1 scores. Eliminates ~40% of trial compute without losing best configuration.</li>
+          <li><strong>Why SHAP in the pipeline?</strong> Model selection shouldn't just maximize F1. SHAP reveals if the model is learning spurious correlations. A model with worse F1 but clean SHAP is often better in production.</li>
+          <li><strong>Why MLflow versioning?</strong> Without versioning, you can't reproduce a model from 3 months ago. MLflow logs exact params, metrics, and artifacts — critical for regulatory audit trails.</li>
+        </ul>
+      </div>
+      <div class="sub-title">Performance + CI/CD</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">3×</div><div class="m-unit">faster</div><div class="m-label">vs Grid Search</div></div>
+        <div class="m-box"><div class="m-num">100</div><div class="m-unit">trials</div><div class="m-label">Bayesian HPO</div></div>
+        <div class="m-box"><div class="m-num">SHAP</div><div class="m-unit">global</div><div class="m-label">Feature Eval</div></div>
+        <div class="m-box"><div class="m-num">MLflow</div><div class="m-unit">versioned</div><div class="m-label">Registry</div></div>
+      </div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">data validation tests</span><span class="infra-tag">model regression gate</span><span class="infra-tag">MLflow push</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">SageMaker (training)</span><span class="infra-tag">S3 (artifacts)</span><span class="infra-tag">MLflow on EC2</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 10: RECOMMENDATION ENGINE
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">10</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">ML · Product · A/B Testing</div>
+      <div class="pc-name">Recommendation Engine</div>
+      <div class="pc-tagline">"Hybrid collab + content filtering with statistically rigorous A/B framework."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/9-recommendation-engine" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">algorithm</span><span class="br blue">ALS + content hybrid</span></div>
+    <div class="badge"><span class="bl">A/B testing</span><span class="br purple">deterministic hash</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">scipy SVD / ALS</span><span class="t-tag">Redis</span><span class="t-tag">FastAPI</span><span class="t-tag">NumPy</span><span class="t-tag">Pandas</span><span class="t-tag">Docker</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design + A/B Framework</div>
+      <div class="arch-wrap">
+<pre class="arch-pre">User request: GET /recommend?user_id=42
+                     │
+                     ▼ <span class="apu">A/B Variant Assignment</span>
+                     │ hash(user_id + experiment_id) % 100
+                     │ [0–49] → control (collaborative)
+                     │ [50–99] → treatment (hybrid)
+                     │ Deterministic: same user always same bucket
+                     │
+           ┌──────────┴──────────┐
+           ▼                     ▼
+  <span class="ag">COLLABORATIVE</span>         <span class="ab">HYBRID MODEL</span>
+  ALS matrix factor.    CF score × 0.7
+  User-item matrix      + content score × 0.3
+  SVD decomposition     content: cosine sim
+  Top-K by dot product  on item features
+           │                     │
+           ▼                     ▼
+   <span class="apu">Cold-start handler:</span>
+   new user → popularity-based fallback
+   new item → content-only until 10 interactions
+
+           │                     │
+           └──────────┬──────────┘
+                      ▼
+              Redis cache (TTL 1hr)
+              hset user:{id}:recs
+                      │
+                      ▼
+              JSON response</pre>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why deterministic hash for A/B?</strong> Random assignment causes the same user to see different variants across sessions. Hash(user_id + experiment_id) is stable — user always gets the same variant. Required for valid statistical inference.</li>
+          <li><strong>Why hybrid (not pure CF)?</strong> Pure CF has cold-start problem: new users/items have no interaction history. Content-based fills the gap. Weight (0.7/0.3) is a tunable parameter optimized via offline A/B.</li>
+          <li><strong>Why cache recommendations?</strong> ALS inference is O(users × factors). Computing at request time adds 50–200ms. Pre-compute per-user recs hourly, cache in Redis. Sub-1ms serving latency.</li>
+        </ul>
+      </div>
+      <div class="sub-title">Performance + CI/CD</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">&lt;5</div><div class="m-unit">ms</div><div class="m-label">Serve (cached)</div></div>
+        <div class="m-box"><div class="m-num">ALS</div><div class="m-unit">+ content</div><div class="m-label">Hybrid Model</div></div>
+        <div class="m-box"><div class="m-num">det.</div><div class="m-unit">hash</div><div class="m-label">A/B Stability</div></div>
+        <div class="m-box"><div class="m-num">25</div><div class="m-unit">% CTR lift</div><div class="m-label">Cold-start fix</div></div>
+      </div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">NDCG regression tests</span><span class="infra-tag">A/B bucket unit tests</span><span class="infra-tag">docker build + ECR</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">EC2 (training)</span><span class="infra-tag">ElastiCache Redis</span><span class="infra-tag">S3 (model artifacts)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 11: LLM CODE REVIEW BOT
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">11</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">AI · LLM · Developer Tools · GitHub Integration</div>
+      <div class="pc-name">LLM Code Review Bot</div>
+      <div class="pc-tagline">"GitHub App using API — inline comments, secret scanning, severity scoring on every PR."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/8-llm-code-review-bot" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">latency</span><span class="br teal">&lt;60s review</span></div>
+    <div class="badge"><span class="bl">security</span><span class="br red">HMAC verified</span></div>
+    <div class="badge"><span class="bl">severity</span><span class="br orange">4 levels</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">AWS Lambda</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">Claude API</span><span class="t-tag">GitHub REST API</span><span class="t-tag">FastAPI</span><span class="t-tag">Docker</span><span class="t-tag">Python</span><span class="t-tag">GitHub Actions</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre"><span class="at">GitHub PR opened / synchronized</span>
+         │
+         ▼ POST /webhook
+<span class="ag">FastAPI Webhook Handler</span>
+         │ HMAC-SHA256 verify signature
+         │ Reject if invalid (security)
+         │
+    ┌────┴───────────────────────┐
+    │  Parse unified diff        │
+    │  git diff format:          │
+    │  @@ -12,7 +12,9 @@        │
+    │  Extract changed hunks     │
+    │  Filter: .py .js .ts .go  │
+    └────┬───────────────────────┘
+         │
+    ┌────┴───────────────────────┐
+    │  Secret Scanner            │
+    │  Regex: AWS_KEY, GITHUB_   │
+    │  Entropy analysis:         │
+    │  Shannon entropy > 4.5     │
+    │  → high entropy string     │
+    │  → flag as potential secret│
+    └────┬───────────────────────┘
+         │
+    ┌────┴───────────────────────┐
+    │  <span class="apu">LLM API</span>                │
+    │  System: senior code reviewer│
+    │  User: diff + file context  │
+    │  Response: JSON array of   │
+    │  [{line, severity, comment}]│
+    │  Severity: CRITICAL/HIGH/  │
+    │            MEDIUM/LOW      │
+    └────┬───────────────────────┘
+         │
+    ┌────┴───────────────────────┐
+    │  GitHub Review API         │
+    │  POST /pulls/{n}/reviews   │
+    │  Inline comment per finding│
+    │  PR summary comment        │
+    │  Request changes if CRITICAL│
+    └────────────────────────────┘</pre>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why HMAC webhook verification?</strong> Without it, anyone can POST to your endpoint and trigger code reviews. GitHub signs every webhook with your secret — verify or reject. Non-negotiable for any GitHub App.</li>
+          <li><strong>Why Shannon entropy for secret detection?</strong> Regex catches known patterns (AWS keys, GitHub tokens). High-entropy strings catch unknown formats — random-looking strings are almost always secrets. Combined approach beats either alone.</li>
+          <li><strong>Why stateless design?</strong> Lambda/ECS Fargate can scale horizontally. No session state means any instance handles any PR. Idempotent — re-running on same PR SHA produces same review.</li>
+          <li><strong>Where latency comes from:</strong> Diff parsing ~100ms. Secret scan ~50ms. LLM API ~5–15s (dominant). GitHub API post ~500ms. Total ~60s for typical PRs.</li>
+        </ul>
+      </div>
+      <div class="sub-title">Performance + CI/CD</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">&lt;60</div><div class="m-unit">sec</div><div class="m-label">Full Review</div></div>
+        <div class="m-box"><div class="m-num">4</div><div class="m-unit">levels</div><div class="m-label">Severity</div></div>
+        <div class="m-box"><div class="m-num">0</div><div class="m-unit">config</div><div class="m-label">Any Repo</div></div>
+        <div class="m-box"><div class="m-num">HMAC</div><div class="m-unit">sha256</div><div class="m-label">Auth</div></div>
+      </div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">webhook unit tests</span><span class="infra-tag">secret scanner tests</span><span class="infra-tag">docker build + ECR</span><span class="infra-tag">deploy Lambda</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">Lambda (webhook handler)</span><span class="infra-tag">API Gateway</span><span class="infra-tag">Secrets Manager (keys)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 12: OBSERVABILITY PLATFORM
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">12</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">Infrastructure · DevOps · Platform Engineering</div>
+      <div class="pc-name">Observability Platform</div>
+      <div class="pc-tagline">"Three pillars in one: metrics, distributed traces, multi-window sustained alerting."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/10-observability-platform" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">pillars</span><span class="br teal">metrics+traces+alerts</span></div>
+    <div class="badge"><span class="bl">tracing</span><span class="br purple">OTel W3C</span></div>
+    <div class="badge"><span class="bl">alerting</span><span class="br green">no flapping</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+    <div class="badge"><span class="bl">deploy</span><span class="br teal">AWS + Grafana Cloud</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">OpenTelemetry</span><span class="t-tag">FastAPI</span><span class="t-tag">TimescaleDB</span><span class="t-tag">Prometheus</span><span class="t-tag">Grafana</span><span class="t-tag">Python</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-left">
+      <div class="sub-title">System Design Diagram</div>
+      <div class="arch-wrap">
+<pre class="arch-pre"><span class="at">Instrumented Service</span>
+       │
+  OTel SDK (auto-instrument FastAPI)
+       │
+  ┌────┴──────────────────────────┐
+  │  METRICS (push to Prometheus)  │
+  │  Counter: requests_total       │
+  │  Histogram: latency_seconds    │
+  │  Gauge: queue_depth            │
+  │  Labels: endpoint, status_code │
+  └────┬──────────────────────────┘
+       │
+  ┌────┴──────────────────────────┐
+  │  TRACES (W3C propagation)      │
+  │  Span: incoming request        │
+  │    └── Span: DB query          │
+  │         └── Span: Redis fetch  │
+  │  TraceID in response headers   │
+  │  → correlate logs to traces    │
+  └────┬──────────────────────────┘
+       │
+  ┌────┴──────────────────────────┐
+  │  ALERTING (multi-window)       │
+  │  Rule: p99 > 500ms             │
+  │  Window 1 (1min): warning      │
+  │  Window 2 (5min): critical     │
+  │  Sustained: must hold for N    │
+  │  consecutive windows           │
+  │  → eliminates flapping         │
+  └────┬──────────────────────────┘
+       │
+  Prometheus ──▶ TimescaleDB ──▶ Grafana
+  (scrape)       (long-term)    (dashboards)</pre>
+      </div>
+    </div>
+    <div class="pc-right">
+      <div class="sub-title">Why This Architecture?</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Why 3 pillars together?</strong> Metrics show something is wrong. Traces show where. Logs show what. All three are needed for production incident investigation. Single-pillar observability is incomplete.</li>
+          <li><strong>Why W3C trace propagation?</strong> Standard headers (traceparent, tracestate) mean any W3C-compliant service in the call chain automatically participates in distributed traces — no custom headers to maintain.</li>
+          <li><strong>Why sustained alerting windows?</strong> Single-window alerts fire on brief spikes (deploy noise, GC pause) causing alert fatigue. Requiring N consecutive windows of violation before paging ensures real incidents — no flapping.</li>
+          <li><strong>Why TimescaleDB over raw Prometheus?</strong> Prometheus retention is limited. TimescaleDB is Postgres-native time-series with compression — long-term metric storage for capacity planning and SLA reporting.</li>
+        </ul>
+      </div>
+      <div class="sub-title">Performance + CI/CD</div>
+      <div class="metrics-row">
+        <div class="m-box"><div class="m-num">3</div><div class="m-unit">pillars</div><div class="m-label">Full Obs.</div></div>
+        <div class="m-box"><div class="m-num">P99</div><div class="m-unit">histograms</div><div class="m-label">Latency</div></div>
+        <div class="m-box"><div class="m-num">0</div><div class="m-unit">flapping</div><div class="m-label">Sustained</div></div>
+        <div class="m-box"><div class="m-num">W3C</div><div class="m-unit">OTel</div><div class="m-label">Traces</div></div>
+      </div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">metric emission tests</span><span class="infra-tag">trace propagation tests</span><span class="infra-tag">docker build + deploy</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">ECS (instrumented services)</span><span class="infra-tag">RDS TimescaleDB</span><span class="infra-tag">Grafana Cloud</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PROJECT 13: ML FEATURE STORE v2
+════════════════════════════════════════ -->
+<div class="proj-card rv">
+  <div class="pc-header">
+    <div class="pc-num-col"><div class="pc-num">13</div></div>
+    <div class="pc-meta">
+      <div class="pc-cat">MLOps · Feature Engineering</div>
+      <div class="pc-name">ML Feature Store v2</div>
+      <div class="pc-tagline">"Lightweight dual-store feature serving — redis online, parquet offline, semver registry."</div>
+    </div>
+    <div class="pc-links-col">
+      <a class="pc-gh-btn primary" href="https://github.com/gowtham27rajendran-commits/2-ml-feature-store" target="_blank">⬡ View on GitHub</a>
+    </div>
+  </div>
+  <div class="pc-badges">
+    <div class="badge"><span class="bl">online latency</span><span class="br teal">&lt;5ms</span></div>
+    <div class="badge"><span class="bl">versioning</span><span class="br purple">SemVer</span></div>
+    <div class="badge"><span class="bl">ci/cd</span><span class="br green">GitHub Actions</span></div>
+  </div>
+  <div class="pc-tech">
+    <span class="t-tag">Redis</span><span class="t-tag">S3 + Parquet</span><span class="t-tag">FastAPI</span><span class="t-tag">Python</span><span class="t-tag">Docker</span>
+  </div>
+  <div class="pc-body">
+    <div class="pc-body-full">
+      <div class="sub-title">Design Notes</div>
+      <div class="why-box">
+        <ul>
+          <li><strong>Lightweight implementation</strong> of the dual-store feature store pattern. Redis for sub-5ms online serving (pipeline API for single RTT), S3+Parquet for batch training data.</li>
+          <li><strong>Feature registry with semantic versioning</strong> — models declare which feature version they were trained on. Breaking changes require version bump. Consumers are never silently broken.</li>
+          <li><strong>Complements the distributed-feature-store repo</strong> — this is the focused implementation, that repo has the full production architecture including Feast integration, PSI drift monitoring, and Spark PIT joins.</li>
+        </ul>
+      </div>
+      <div class="infra-row">
+        <div class="infra-box">
+          <div class="infra-title">GitHub Actions</div>
+          <div class="infra-items"><span class="infra-tag">feature read/write tests</span><span class="infra-tag">latency benchmark</span><span class="infra-tag">docker build</span></div>
+        </div>
+        <div class="infra-box">
+          <div class="infra-title">AWS Stack</div>
+          <div class="infra-items"><span class="infra-tag">ElastiCache Redis</span><span class="infra-tag">S3 (parquet store)</span><span class="infra-tag">ECS Fargate (API)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- GitHub CTA -->
+  <div style="text-align:center;margin-top:40px;padding-top:40px;border-top:1px solid var(--border)" class="rv">
+    <p style="font-size:11px;color:var(--text3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px">All 13 repos are public with full documentation</p>
+    <a href="https://github.com/gowtham27rajendran-commits" target="_blank" style="display:inline-flex;align-items:center;gap:12px;padding:12px 32px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:background .2s,color .2s" onmouseenter="this.style.background='var(--gold)';this.style.color='#000'" onmouseleave="this.style.background='transparent';this.style.color='var(--gold)'">
+      ⬡ &nbsp; github.com/gowtham27rajendran-commits
+    </a>
   </div>
 </section>
 
-<!-- ── EDUCATION ──────────────────────────────── -->
+<!-- ══ EDUCATION ══════════════════════════════════════ -->
 <section id="education">
   <div class="section-label" data-num="04">Education</div>
-  <div class="section-title reveal">ACADEMIC<br>FOUNDATION</div>
+  <div class="section-title rv">ACADEMIC<br>FOUNDATION</div>
   <div class="edu-grid">
-    <div class="edu-card reveal">
+    <div class="edu-card rv">
       <div class="edu-year">2024</div>
       <div class="edu-degree">MSc Advanced Computer Science<br>with Data Science</div>
       <div class="edu-school">University of Strathclyde · Glasgow, Scotland, UK</div>
       <p class="edu-detail">Distributed Systems · Machine Learning & AI · Big Data Analytics · Cloud Computing · Database Systems · Advanced Data Structures & Algorithms · Software Engineering Practices</p>
     </div>
-    <div class="edu-card reveal reveal-delay-2">
+    <div class="edu-card rv d2">
       <div class="edu-year">2022</div>
       <div class="edu-degree">BE Electrical, Electronics &<br>Communications Engineering</div>
       <div class="edu-school">Coimbatore Institute of Technology · India</div>
@@ -1139,186 +1774,107 @@ a, button, .project-card, .tag, .exp-item, .edu-card, .skill-block, .contact-lin
   </div>
 </section>
 
-<!-- ── SKILLS ─────────────────────────────────── -->
+<!-- ══ SKILLS ═════════════════════════════════════════ -->
 <section id="skills">
   <div class="section-label" data-num="05">Skills</div>
   <div class="skills-matrix">
-    <div class="skill-block reveal">
+    <div class="skill-block rv">
       <div class="skill-block-title">Machine Learning</div>
       <div class="skill-item"><span class="skill-name">Scikit-learn</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="92" style="width:0%"></div></div></div>
       <div class="skill-item"><span class="skill-name">TensorFlow</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">XGBoost</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">XGBoost</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="90" style="width:0%"></div></div></div>
       <div class="skill-item"><span class="skill-name">BERT / NLP</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">A/B Testing</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">SHAP / MLflow</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
     </div>
-    <div class="skill-block reveal reveal-delay-1">
+    <div class="skill-block rv d1">
       <div class="skill-block-title">Backend Engineering</div>
       <div class="skill-item"><span class="skill-name">Spring Boot</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">Flask / FastAPI</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="90" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">Redis</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">FastAPI / Flask</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="92" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Redis + Lua</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
       <div class="skill-item"><span class="skill-name">PostgreSQL</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="86" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">Kafka</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Apache Kafka</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="87" style="width:0%"></div></div></div>
     </div>
-    <div class="skill-block reveal reveal-delay-2">
+    <div class="skill-block rv d2">
       <div class="skill-block-title">Data Engineering</div>
       <div class="skill-item"><span class="skill-name">Apache Spark</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">Hadoop</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="80" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">ETL / ELT</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Delta Lake / Iceberg</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">Airflow / ETL</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="84" style="width:0%"></div></div></div>
       <div class="skill-item"><span class="skill-name">ClickHouse</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="78" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">Prometheus/Grafana</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">OpenTelemetry</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82" style="width:0%"></div></div></div>
     </div>
-    <div class="skill-block reveal reveal-delay-3">
-      <div class="skill-block-title">Infrastructure & DSA</div>
-      <div class="skill-item"><span class="skill-name">Docker</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="90" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">Kubernetes</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="78" style="width:0%"></div></div></div>
-      <div class="skill-item"><span class="skill-name">Terraform / CI/CD</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="80" style="width:0%"></div></div></div>
+    <div class="skill-block rv d3">
+      <div class="skill-block-title">Infra + DSA</div>
+      <div class="skill-item"><span class="skill-name">Docker + K8s</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="90" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">AWS EC2/S3/RDS</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="82" style="width:0%"></div></div></div>
+      <div class="skill-item"><span class="skill-name">GitHub Actions</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="85" style="width:0%"></div></div></div>
       <div class="skill-item"><span class="skill-name">Python</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="95" style="width:0%"></div></div></div>
       <div class="skill-item"><span class="skill-name">DSA (500+ solved)</span><div class="skill-bar-wrap"><div class="skill-bar" data-w="88" style="width:0%"></div></div></div>
     </div>
   </div>
 </section>
 
-<!-- ── CONTACT ─────────────────────────────────── -->
+<!-- ══ CONTACT ════════════════════════════════════════ -->
 <section id="contact">
-  <div class="contact-title reveal">
-    LET'S<br><span class="line2">BUILD</span><br>TOGETHER
-  </div>
-  <div class="contact-links reveal reveal-delay-2">
-    <a class="contact-link" href="mailto:gowtham27raja@gmail.com">
-      <span class="contact-link-label">Email</span>
-      <span class="contact-link-val">gowtham27raja@gmail.com</span>
-    </a>
-    <a class="contact-link" href="https://www.linkedin.com/in/gowtham-rajendran-ai" target="_blank">
-      <span class="contact-link-label">LinkedIn</span>
-      <span class="contact-link-val">gowtham-rajendran-ai</span>
-    </a>
-    <a class="contact-link" href="https://github.com/gowtham27rajendran-commits" target="_blank">
-      <span class="contact-link-label">GitHub</span>
-      <span class="contact-link-val">gowtham27rajendran-commits</span>
-    </a>
-    <a class="contact-link" href="tel:+919629881914">
-      <span class="contact-link-label">Phone</span>
-      <span class="contact-link-val">+91 96298 81914</span>
-    </a>
+  <div class="contact-title rv">LET'S<br><span class="line2">BUILD</span><br>TOGETHER</div>
+  <div class="contact-links rv d2">
+    <a class="contact-link" href="mailto:gowtham27raja@gmail.com"><span class="cl-label">Email</span><span class="cl-val">gowtham27raja@gmail.com</span></a>
+    <a class="contact-link" href="https://www.linkedin.com/in/gowtham-rajendran-ai" target="_blank"><span class="cl-label">LinkedIn</span><span class="cl-val">gowtham-rajendran-ai</span></a>
+    <a class="contact-link" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="cl-label">GitHub</span><span class="cl-val">gowtham27rajendran-commits</span></a>
+    <a class="contact-link" href="tel:+919629881914"><span class="cl-label">Phone</span><span class="cl-val">+91 96298 81914</span></a>
   </div>
 </section>
 
 <footer>
   <div class="footer-copy">© 2025 Gowtham Rajendran</div>
-  <div class="footer-right">Designed & coded from scratch · <span class="gold">Coimbatore, India</span></div>
+  <div class="footer-right">Designed &amp; built from scratch · <span class="gold">Coimbatore, India</span></div>
 </footer>
-
-</div><!-- .page -->
+</div>
 
 <script>
-/* ── CURSOR ──────────────────────── */
-const cur = document.getElementById('cursor');
-const ring = document.getElementById('cursor-ring');
+/* CURSOR */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
-(function loop(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
-document.querySelectorAll('a,button,.project-card,.tag,.exp-item').forEach(el=>{
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.proj-card,.tag').forEach(el=>{
   el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
   el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
 });
 
-/* ── NAV SCROLL ───────────────────── */
-const nav = document.getElementById('nav');
-window.addEventListener('scroll',()=>{ nav.classList.toggle('scrolled', window.scrollY > 60); });
+/* NAV */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60));
 
-/* ── CANVAS PARTICLES ─────────────── */
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let W,H,particles=[];
-function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
-resize(); window.addEventListener('resize', resize);
-class Particle {
-  constructor(){
-    this.x=Math.random()*W; this.y=Math.random()*H;
-    this.vx=(Math.random()-0.5)*0.3; this.vy=(Math.random()-0.5)*0.3;
-    this.r=Math.random()*1.2+0.3;
-    this.alpha=Math.random()*0.5+0.1;
-  }
-  update(){ this.x+=this.vx; this.y+=this.vy;
-    if(this.x<0)this.x=W; if(this.x>W)this.x=0;
-    if(this.y<0)this.y=H; if(this.y>H)this.y=0;
-  }
-  draw(){
-    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(201,168,76,${this.alpha})`; ctx.fill();
-  }
-}
-for(let i=0;i<120;i++) particles.push(new Particle());
-const LINK_DIST=120;
-function animCanvas(){
-  ctx.clearRect(0,0,W,H);
-  for(let i=0;i<particles.length;i++){
-    particles[i].update(); particles[i].draw();
-    for(let j=i+1;j<particles.length;j++){
-      const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
-      const d=Math.sqrt(dx*dx+dy*dy);
-      if(d<LINK_DIST){
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x,particles[i].y);
-        ctx.lineTo(particles[j].x,particles[j].y);
-        ctx.strokeStyle=`rgba(201,168,76,${0.12*(1-d/LINK_DIST)})`;
-        ctx.lineWidth=0.5; ctx.stroke();
-      }
-    }
-  }
-  requestAnimationFrame(animCanvas);
-}
-animCanvas();
+/* CANVAS */
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+class P{constructor(){this.reset()}reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.25;this.vy=(Math.random()-.5)*.25;this.r=Math.random()*1.1+.3;this.a=Math.random()*.4+.08}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0)this.x=W;if(this.x>W)this.x=0;if(this.y<0)this.y=H;if(this.y>H)this.y=0}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(201,168,76,${this.a})`;ctx.fill()}}
+const pts=Array.from({length:100},()=>new P());
+(function anim(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.update();p.draw()});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<110){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(201,168,76,${.1*(1-d/110)})`;ctx.lineWidth=.5;ctx.stroke()}}requestAnimationFrame(anim)})();
 
-/* ── REVEAL ON SCROLL ─────────────── */
-const reveals = document.querySelectorAll('.reveal');
-const obs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
-},{threshold:0.12});
-reveals.forEach(el=>obs.observe(el));
+/* REVEAL */
+const rvEls=document.querySelectorAll('.rv');
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.06});
+rvEls.forEach(el=>obs.observe(el));
 
-/* ── COUNTER ANIMATION ─────────────── */
-const counters = document.querySelectorAll('.counter');
-const counterObs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const el=e.target, target=+el.dataset.target;
-      const step = target/60;
-      let current=0;
-      const t=setInterval(()=>{
-        current+=step; if(current>=target){ el.textContent=target; clearInterval(t); return; }
-        el.textContent=Math.floor(current);
-      },16);
-      counterObs.unobserve(el);
-    }
-  });
-},{threshold:0.5});
-counters.forEach(el=>counterObs.observe(el));
+/* COUNTERS */
+const cObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const el=e.target,tgt=+el.dataset.target,step=tgt/60;let c=0;const t=setInterval(()=>{c+=step;if(c>=tgt){el.textContent=tgt;clearInterval(t);return}el.textContent=Math.floor(c)},16);cObs.unobserve(el)}})},{threshold:.4});
+document.querySelectorAll('.counter').forEach(el=>cObs.observe(el));
 
-/* ── SKILL BARS ───────────────────── */
-const bars = document.querySelectorAll('.skill-bar');
-const barObs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.style.width = e.target.dataset.w+'%';
-      barObs.unobserve(e.target);
-    }
-  });
-},{threshold:0.3});
-bars.forEach(b=>barObs.observe(b));
+/* PERF BARS */
+const bObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.width=e.target.dataset.w+'%';bObs.unobserve(e.target)}})},{threshold:.2});
+document.querySelectorAll('.pb-fill').forEach(b=>bObs.observe(b));
 
-/* ── SMOOTH ANCHOR ─────────────────── */
+/* SKILL BARS */
+const sObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.width=e.target.dataset.w+'%';sObs.unobserve(e.target)}})},{threshold:.2});
+document.querySelectorAll('.skill-bar').forEach(b=>sObs.observe(b));
+
+/* SMOOTH SCROLL */
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click',e=>{
-    e.preventDefault();
-    document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
-  });
+  a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'})});
 });
 </script>
 </body>
 </html>
-HTMLEOF
-Output
 
-Done. File size: 59267 bytes
-Done
