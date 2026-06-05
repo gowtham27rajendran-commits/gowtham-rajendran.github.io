@@ -320,7 +320,7 @@ footer{padding:28px 48px;display:flex;justify-content:space-between;align-items:
 </nav>
 
 <!-- ══════════════════════════════════════════
-     CASE STUDY MODALS — COMPRESSED VERSION
+     CASE STUDY MODALS
 ══════════════════════════════════════════ -->
 
 <!-- MODAL 1: Data Lakehouse Pipeline -->
@@ -471,11 +471,6 @@ footer{padding:28px 48px;display:flex;justify-content:space-between;align-items:
         CooperativeStickyAssignor
   Result: rebalance gap ~3s vs 31s</div>
       </div>
-    </div>
-
-    <div class="cs-tradeoff">
-      <div class="cs-tradeoff-label">Why Kafka over RabbitMQ?</div>
-      <div class="cs-tradeoff-text"><strong>RabbitMQ</strong> excels at task queues with complex routing and priority. <strong>Kafka</strong> wins when the same event stream needs to be consumed by multiple independent groups (analytics, ML features, alerting) without coordination — and when replay on schema change or pipeline failure is a requirement. For this platform, fan-out + replay made Kafka the only reasonable choice.</div>
     </div>
 
     <div style="margin-top:16px">
@@ -764,11 +759,11 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
   <div class="hero-metrics">
     <div class="metric-item"><div class="metric-num counter" data-target="3">0</div><div class="metric-label">Years Exp</div></div>
     <div class="metric-div"></div>
-    <div class="metric-item"><div class="metric-num counter" data-target="13">0</div><div class="metric-label">GitHub Repos</div></div>
+    <div class="metric-item"><div class="metric-num counter" data-target="13">0</div><div class="metric-label">Projects</div></div>
     <div class="metric-div"></div>
     <div class="metric-item"><div class="metric-num counter" data-target="500">0</div><div class="metric-label">DSA Solved</div></div>
     <div class="metric-div"></div>
-    <div class="metric-item"><div class="metric-num counter" data-target="25">0</div><div class="metric-label">% Avg Perf Gain</div></div>
+    <div class="metric-item"><div class="metric-num" style="font-size:28px;line-height:1.1">Production<br>Systems</div><div class="metric-label">End-to-End</div></div>
   </div>
   <div class="hero-scroll"><div class="scroll-line"></div>Scroll to explore</div>
 </section>
@@ -820,9 +815,9 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
         <div class="exp-loc">Paisley, UK</div>
       </div>
       <div>
-        <div class="exp-role">Software Development Engineer</div>
+        <div class="exp-role">Software Engineer</div>
         <ul class="exp-bullets">
-          <li>Owned backend system design for retail platforms — service boundaries, API contracts, and data consistency under concurrent traffic.</li>
+          <li>Designed and maintained backend services for retail platforms, defining service boundaries, API contracts, and data consistency guarantees under concurrent workloads.</li>
           <li>Diagnosed p99 latency spikes by profiling query plans: eliminated N+1 patterns, added composite indexes, introduced Redis caching — <strong>~20% p99 latency reduction</strong> without schema changes.</li>
           <li>Designed ingestion pipeline (event capture → validation → transformation → storage) with idempotent writes and retry-safe consumers — <strong>~30% fewer data inconsistencies</strong>.</li>
           <li>Introduced API contract testing between teams, reducing integration regressions across services.</li>
@@ -839,9 +834,9 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
       <div>
         <div class="exp-role">Junior Data Engineer</div>
         <ul class="exp-bullets">
-          <li>Owned production Spark pipelines processing millions of records daily. Profiled partition skew via Spark UI, repartitioned on high-cardinality keys with salting — <strong>~25% runtime reduction</strong>.</li>
+          <li>Maintained production Spark pipelines processing millions of records daily. Profiled partition skew via Spark UI, repartitioned on high-cardinality keys with salting — <strong>~25% runtime reduction</strong>.</li>
           <li>Built automated data-quality gates (schema validation, null-rate checks, referential integrity) as a pipeline stage — eliminated manual remediation cycle entirely.</li>
-          <li>Implemented pipeline observability dashboards (SLA tracking, error rates, freshness) — significantly reduced incident diagnosis time.</li>
+          <li>Built observability dashboards for pipeline SLAs, freshness, and error rates, improving operational visibility and reducing incident investigation time.</li>
         </ul>
         <div class="exp-tags"><span class="exp-tag">Apache Spark</span><span class="exp-tag">Hadoop</span><span class="exp-tag">ETL/ELT</span><span class="exp-tag">Grafana</span></div>
       </div>
@@ -873,7 +868,11 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
         </div>
         <div>
           <div class="exp-early-body">
-            Worked across software engineering, data analytics, machine learning, and DevOps roles through multiple internships and part-time positions. Built web applications, APIs, mobile applications, automation tools, data pipelines, ML models, CI/CD workflows, and cloud deployments.
+            Worked across software engineering, machine learning, data analytics, and DevOps teams, contributing to production applications, automation systems, and data-driven solutions.
+            <br><br>
+            Built web and mobile applications, REST APIs, data pipelines, forecasting models, recommendation systems, and cloud-native deployment workflows using Python and modern engineering practices.
+            <br><br>
+            Gained hands-on experience with CI/CD, containerization, infrastructure automation, machine learning model deployment, data visualization, and large-scale data processing.
           </div>
           <div class="exp-early-tags">
             <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">Web APIs</span><span class="tag">ML Models</span><span class="tag">CI/CD</span><span class="tag">Cloud Deployments</span>
@@ -888,15 +887,15 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
 <!-- DSA -->
 <section id="dsa">
   <div class="section-label" data-num="02">DSA</div>
-  <div class="section-title rv">DATA STRUCTURES<br>& ALGORITHMS</div>
+  <div class="section-title rv">DATA STRUCTURES<br>&amp; ALGORITHMS</div>
   <div class="dsa-inner">
     <div class="rv">
       <div class="dsa-big-num counter" data-target="500">0</div>
       <div class="dsa-label">Problems Solved</div>
       <div class="dsa-cats">
-        <div class="dsa-cat"><div class="dsa-cat-name">Arrays & Hashing</div><div class="dsa-cat-val">Mastered</div></div>
-        <div class="dsa-cat"><div class="dsa-cat-name">Graphs</div><div class="dsa-cat-val">BFS·DFS·Dijkstra</div></div>
-        <div class="dsa-cat"><div class="dsa-cat-name">Dynamic Programming</div><div class="dsa-cat-val">Tabulation·Memo</div></div>
+        <div class="dsa-cat"><div class="dsa-cat-name">Arrays &amp; Hashing</div><div class="dsa-cat-val">500+ Problems</div></div>
+        <div class="dsa-cat"><div class="dsa-cat-name">Graphs</div><div class="dsa-cat-val">BFS · DFS · Dijkstra</div></div>
+        <div class="dsa-cat"><div class="dsa-cat-name">Dynamic Programming</div><div class="dsa-cat-val">Memoization · Tabulation</div></div>
         <div class="dsa-cat"><div class="dsa-cat-name">System Design</div><div class="dsa-cat-val">Fundamentals</div></div>
       </div>
     </div>
@@ -962,7 +961,6 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
         <div class="pt-tags">
           <span class="pt-tag">Kafka</span><span class="pt-tag">Avro + SR</span><span class="pt-tag">Redis</span><span class="pt-tag">OpenTelemetry</span><span class="pt-tag">FastAPI</span>
         </div>
-        <div class="pt-tradeoff"><strong>Why Kafka over RabbitMQ?</strong> — Fan-out to multiple consumer groups + replay on pipeline failure. RabbitMQ doesn't offer durable log semantics.</div>
         <div class="pt-actions" style="margin-top:16px">
           <button class="pt-btn primary" onclick="openModal('cs-event')">Read Case Study →</button>
           <a class="pt-btn ghost" href="https://github.com/gowtham27rajendran-commits/distributed-event-platform" target="_blank">⬡ GitHub</a>
@@ -980,7 +978,6 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
         <div class="pt-tags">
           <span class="pt-tag">XGBoost</span><span class="pt-tag">SHAP</span><span class="pt-tag">Redis</span><span class="pt-tag">Kafka</span><span class="pt-tag">FastAPI</span>
         </div>
-        <div class="pt-tradeoff"><strong>Why XGBoost over a neural net?</strong> — Tabular data at this scale, SHAP compliance requirement, and 10× faster inference. Black-box deep models don't satisfy regulatory explainability.</div>
         <div class="pt-actions" style="margin-top:16px">
           <button class="pt-btn primary" onclick="openModal('cs-fraud')">Read Case Study →</button>
           <a class="pt-btn ghost" href="https://github.com/gowtham27rajendran-commits/7-fraud-detection" target="_blank">⬡ GitHub</a>
@@ -998,7 +995,6 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
         <div class="pt-tags">
           <span class="pt-tag">Redis Cluster</span><span class="pt-tag">Spark PIT Joins</span><span class="pt-tag">Feast</span><span class="pt-tag">Airflow</span>
         </div>
-        <div class="pt-tradeoff"><strong>Why Redis over Postgres for serving?</strong> — Sub-ms HGETALL vs 5–15ms Postgres per entity. In a fraud hot path with a 100ms total budget, feature retrieval latency matters.</div>
         <div class="pt-actions" style="margin-top:16px">
           <button class="pt-btn primary" onclick="openModal('cs-featurestore')">Read Case Study →</button>
           <a class="pt-btn ghost" href="https://github.com/gowtham27rajendran-commits/distributed-feature-store" target="_blank">⬡ GitHub</a>
@@ -1016,7 +1012,6 @@ Dense-only: 91% · Hybrid: 94% Recall@10</div>
         <div class="pt-tags">
           <span class="pt-tag">FAISS IVF</span><span class="pt-tag">sentence-transformers</span><span class="pt-tag">BM25</span><span class="pt-tag">RRF</span>
         </div>
-        <div class="pt-tradeoff"><strong>Why hybrid over dense-only?</strong> — Dense models fail completely on product codes and exact terms. BM25 fills that gap. RRF rank-fusion beats score interpolation in eval.</div>
         <div class="pt-actions" style="margin-top:16px">
           <button class="pt-btn primary" onclick="openModal('cs-search')">Read Case Study →</button>
           <a class="pt-btn ghost" href="https://github.com/gowtham27rajendran-commits/3-semantic-search-engine" target="_blank">⬡ GitHub</a>
