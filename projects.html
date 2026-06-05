@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Projects — Gowtham Rajendran</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06060a;--bg2:#0b0b10;--bg3:#111118;--surface:#16161e;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.11);
+  --gold:#c9a84c;--gold2:#e8c870;--gold-dim:rgba(201,168,76,.13);--gold-glow:rgba(201,168,76,.05);
+  --text:#e8e4dd;--text2:#9a9490;--text3:#4e4c48;
+  --green:#3ddc84;--teal:#4bc8c8;--red:#e05555;--blue:#5588e0;--purple:#9966cc;
+  --ff-d:'Bebas Neue',sans-serif;--ff-s:'Cormorant Garamond',serif;--ff-m:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-m);font-size:13px;font-weight:300;line-height:1.7;overflow-x:hidden;cursor:none}
+::selection{background:var(--gold-dim);color:var(--gold2)}
+
+#cursor{position:fixed;top:0;left:0;z-index:9999;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:transform .15s,background .2s}
+#cursor-ring{position:fixed;top:0;left:0;z-index:9998;width:32px;height:32px;border:1px solid rgba(201,168,76,.4);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s}
+body.hovering #cursor{transform:translate(-50%,-50%) scale(2.5);background:var(--gold2)}
+body.hovering #cursor-ring{width:48px;height:48px;opacity:.4}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;border-bottom:1px solid var(--border);background:rgba(6,6,10,.92);backdrop-filter:blur(14px)}
+.nav-logo{font-family:var(--ff-d);font-size:22px;letter-spacing:.15em;color:var(--gold);text-decoration:none}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--text3);text-decoration:none;font-size:10px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gold)}
+.nav-gh{display:flex;align-items:center;gap:6px;padding:5px 12px;border:1px solid var(--border2);text-decoration:none;color:var(--text2);font-size:10px;letter-spacing:.15em;text-transform:uppercase;transition:color .2s,border-color .2s}
+.nav-gh:hover{color:var(--gold);border-color:var(--gold)}
+
+/* Page hero */
+.page-hero{padding:140px 48px 60px;position:relative;border-bottom:1px solid var(--border)}
+.ph-eyebrow{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:14px}
+.ph-eyebrow::before{content:'';display:block;width:36px;height:1px;background:var(--gold)}
+.ph-title{font-family:var(--ff-d);font-size:clamp(72px,10vw,140px);line-height:.88;color:var(--text);margin-bottom:20px}
+.ph-title .acc{color:var(--gold)}
+.ph-sub{font-family:var(--ff-s);font-size:19px;font-style:italic;font-weight:300;color:var(--text2);max-width:580px}
+.ph-count{position:absolute;bottom:48px;right:48px;font-family:var(--ff-d);font-size:80px;color:var(--border);line-height:1}
+
+/* Filter bar */
+.filter-bar{padding:20px 48px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:62px;z-index:90;backdrop-filter:blur(12px)}
+.filter-btn{padding:5px 14px;border:1px solid var(--border2);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);cursor:pointer;background:none;font-family:var(--ff-m);transition:all .2s}
+.filter-btn:hover,.filter-btn.active{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+
+/* Project cards */
+.projects-main{padding:0 48px 80px}
+.proj-section{margin-top:2px}
+.proj-card{background:var(--bg3);margin-bottom:2px;transition:background .25s;overflow:hidden}
+.proj-card:hover{background:var(--surface)}
+.pc-header{display:grid;grid-template-columns:80px 1fr auto;gap:32px;align-items:start;padding:40px 44px;cursor:pointer;position:relative}
+.pc-header::after{content:'';position:absolute;left:0;bottom:0;right:0;height:1px;background:var(--border)}
+.pc-num{font-family:var(--ff-d);font-size:44px;color:var(--border2);line-height:1;transition:color .3s}
+.proj-card:hover .pc-num{color:var(--gold-dim)}
+.pc-meta{flex:1}
+.pc-cat{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;gap:10px;flex-wrap:wrap}
+.pc-cat-dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--gold);vertical-align:middle;margin:0 4px}
+.pc-name{font-family:var(--ff-d);font-size:clamp(28px,3.2vw,44px);line-height:.92;color:var(--text);margin-bottom:10px}
+.pc-tagline{font-family:var(--ff-s);font-size:15px;font-style:italic;font-weight:300;color:var(--text2)}
+.pc-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px;min-width:200px}
+.pc-chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+.pc-chip{padding:2px 8px;border:1px solid var(--border);font-size:8.5px;color:var(--text3);letter-spacing:.06em}
+.pc-toggle{width:36px;height:36px;border:1px solid var(--border2);background:none;color:var(--text3);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-family:var(--ff-m);flex-shrink:0}
+.proj-card.open .pc-toggle{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+
+/* Expanded body */
+.pc-body{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.16,1,.3,1)}
+.proj-card.open .pc-body{max-height:3000px}
+.pc-inner{padding:0 44px 44px;display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.pc-inner-full{padding:0 44px;margin-bottom:2px}
+.pc-panel{background:rgba(0,0,0,.3);padding:28px;border:1px solid var(--border)}
+.pc-panel-full{background:rgba(0,0,0,.3);padding:28px;border:1px solid var(--border);margin-bottom:2px}
+.pc-panel-title{font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.pc-panel-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Metrics row */
+.pc-metrics{display:flex;gap:0;border:1px solid var(--border);margin-bottom:2px}
+.pc-met{flex:1;padding:18px 22px;border-right:1px solid var(--border);text-align:center}
+.pc-met:last-child{border-right:none}
+.pc-met-val{font-family:var(--ff-d);font-size:26px;color:var(--gold);line-height:1;margin-bottom:3px}
+.pc-met-label{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3)}
+
+/* arch block */
+.pc-arch{background:#050507;border:1px solid rgba(201,168,76,.07);padding:16px;font-family:var(--ff-m);font-size:10px;line-height:1.9;white-space:pre;overflow-x:auto;color:var(--text3)}
+.pc-arch .ag{color:var(--gold)}.pc-arch .at{color:var(--teal)}.pc-arch .agr{color:var(--green)}.pc-arch .ar{color:var(--red)}.pc-arch .ab{color:var(--blue)}.pc-arch .ap{color:var(--purple)}
+
+/* bullets */
+.pc-ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.pc-ul li{color:var(--text2);font-size:11.5px;line-height:1.65;padding-left:14px;position:relative}
+.pc-ul li::before{content:'▸';position:absolute;left:0;color:var(--gold);font-size:9px;top:3px}
+.pc-ul li strong{color:var(--text)}
+
+/* error log */
+.pc-errlog{background:#0a0405;border:1px solid rgba(224,85,85,.12);padding:14px 16px;font-family:var(--ff-m);font-size:9.5px;line-height:1.85;color:#8a5050;margin-top:10px}
+.pc-errlog .er{color:#cc5c5c}.pc-errlog .ef{color:var(--green)}.pc-errlog .ew{color:#c4983f}
+
+/* badges row */
+.pc-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.pc-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid var(--border2);font-size:9px;color:var(--text3);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;font-family:var(--ff-m)}
+.pc-badge:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.pc-badge .dot{width:5px;height:5px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot-g{background:var(--green)}.dot-go{background:var(--gold)}.dot-b{background:var(--blue)}.dot-t{background:var(--teal)}.dot-r{background:var(--red)}.dot-p{background:var(--purple)}
+
+/* verdict */
+.pc-verdict{background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.1);padding:20px 24px;margin-top:2px;margin-bottom:2px}
+.pc-verdict-l{font-size:8.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.pc-verdict-t{font-family:var(--ff-s);font-size:16px;font-weight:300;font-style:italic;color:var(--text2);line-height:1.65}
+
+/* category dividers */
+.cat-divider{padding:28px 48px 16px;border-top:1px solid var(--border)}
+.cat-divider-label{font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:14px}
+.cat-divider-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2)}::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+footer{padding:28px 48px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);margin-top:40px}
+.footer-copy{font-size:10px;color:var(--text3)}
+.footer-right{font-size:10px;color:var(--text3)}
+.footer-right .gold{color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+
+<nav>
+  <a class="nav-logo" href="index.html">GR</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#experience">Experience</a></li>
+    <li><a href="index.html#dsa">DSA</a></li>
+    <li><a href="projects.html" class="active">All Projects</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a class="nav-gh" href="https://github.com/gowtham27rajendran-commits" target="_blank">⬡ GitHub</a>
+</nav>
+
+<div class="page-hero">
+  <div class="ph-eyebrow">Engineering Portfolio</div>
+  <div class="ph-title">ALL<br><span class="acc">PROJECTS</span></div>
+  <div class="ph-sub">13 production-grade systems. Every one built with architecture, benchmarks, and documented tradeoffs.</div>
+  <div class="ph-count">13</div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">All (13)</button>
+  <button class="filter-btn" data-filter="data-eng">Data Engineering</button>
+  <button class="filter-btn" data-filter="ml">ML / AI</button>
+  <button class="filter-btn" data-filter="backend">Backend Systems</button>
+  <button class="filter-btn" data-filter="mlops">MLOps / Infra</button>
+  <button class="filter-btn" data-filter="observability">Observability</button>
+</div>
+
+<div class="projects-main">
+
+<!-- ══ DATA ENGINEERING ══ -->
+<div class="cat-divider"><div class="cat-divider-label">Data Engineering · 3 Projects</div></div>
+
+<!-- 01 - Data Lakehouse -->
+<div class="proj-card" data-tags="data-eng">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">01</div>
+    <div class="pc-meta">
+      <div class="pc-cat">Data Engineering <span class="pc-cat-dot"></span> Medallion Architecture <span class="pc-cat-dot"></span> Streaming</div>
+      <div class="pc-name">Data Lakehouse Pipeline</div>
+      <div class="pc-tagline">TB-scale medallion architecture with ACID guarantees, &lt;5min freshness, and 3–5× query speedup</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Spark 3.5</span><span class="pc-chip">Delta Lake</span><span class="pc-chip">Iceberg</span><span class="pc-chip">Airflow</span><span class="pc-chip">Trino</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">&lt;5min</div><div class="pc-met-label">Freshness SLA</div></div>
+        <div class="pc-met"><div class="pc-met-val">3–5×</div><div class="pc-met-label">Query Speedup</div></div>
+        <div class="pc-met"><div class="pc-met-val">TB+</div><div class="pc-met-label">Daily Ingest</div></div>
+        <div class="pc-met"><div class="pc-met-val">ACID</div><div class="pc-met-label">Guarantees</div></div>
+        <div class="pc-met"><div class="pc-met-val">99.9%</div><div class="pc-met-label">Pipeline SLA</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch"><span class="at">Raw Sources</span> (S3 · Kinesis · DB CDC) ────────────────────────────┐
+                                                                    ▼
+                                                          <span class="ag">[ BRONZE ]</span>  S3 · Avro · Schema Registry
+                                                          Append-only · Idempotent writes
+                                                                    │
+                                              Spark Structured Streaming — 5min micro-batch
+                                                                    │
+                                                          <span class="ag">[ SILVER ]</span>  Delta MERGE dedup · SCD2
+                                                          PII masking · Quality gates
+                                                                    │
+                                                       Airflow DAG (hourly) · Circuit breaker
+                                                                    │
+                                                          <span class="ag">[ GOLD ]</span>  Iceberg + Bloom indexes
+                                                          Z-order clustering · Pre-aggregated
+                                                                    │
+                                        ┌───────────────────────────┼──────────────────┐
+                                        ▼                           ▼                  ▼
+                                 <span class="agr">Trino (BI)</span>             <span class="agr">Spark SQL (ML)</span>       <span class="agr">Grafana SLA</span></div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Three-layer medallion</strong> — Bronze (raw), Silver (cleaned), Gold (business-ready) with SLAs per layer and circuit-breaker Airflow DAGs</li>
+          <li><strong>Z-order clustering</strong> on event_date + user_id — 3–5× Trino query speedup benchmarked</li>
+          <li><strong>Schema evolution strategy</strong> — Avro Schema Registry + BACKWARD compatibility; breaking changes → shadow table</li>
+          <li><strong>OPTIMIZE + ZORDER cron</strong> — every 6h to prevent Delta small files explosion</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Partition skew on Silver MERGE</strong> — 48GB hot partitions vs 800MB avg; fixed with salted repartition</li>
+          <li><strong>12,847 small files</strong> per Gold partition after hourly micro-batch → OPTIMIZE cron</li>
+        </ul>
+        <div class="pc-errlog"><span class="er">ERROR</span> SparkException: FetchFailedException (partition 0)
+  Skew: p0=48GB, avg=800MB
+<span class="ew">WARN</span>  Delta: 12,847 small files detected
+<span class="ef">FIX</span>   salt_key=(user_id%200), repartition(400) → -25% runtime</div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding-bottom:0">
+      <div class="pc-panel-full" style="display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap">
+        <div>
+          <div class="pc-panel-title" style="margin-bottom:8px">What It Brings to the Table</div>
+          <ul class="pc-ul" style="max-width:500px">
+            <li>Netflix/Databricks/Uber-scale pattern implemented end-to-end with real partition tuning</li>
+            <li>ACID semantics in distributed storage — not just "Spark jobs"</li>
+          </ul>
+        </div>
+        <div>
+          <div class="pc-panel-title" style="margin-bottom:8px">Repository</div>
+          <div class="pc-badges">
+            <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits/data-lakehouse-pipeline" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+            <span class="pc-badge"><span class="dot dot-go"></span>Spark 3.5</span>
+            <span class="pc-badge"><span class="dot dot-t"></span>Delta Lake</span>
+            <span class="pc-badge"><span class="dot dot-b"></span>Airflow</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Not a tutorial — a system. Real partition tuning, schema enforcement, and observed performance numbers at every layer."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 02 - Distributed Event Platform -->
+<div class="proj-card" data-tags="backend">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">02</div>
+    <div class="pc-meta">
+      <div class="pc-cat">Distributed Systems <span class="pc-cat-dot"></span> Kafka <span class="pc-cat-dot"></span> Platform Engineering</div>
+      <div class="pc-name">Distributed Event Platform</div>
+      <div class="pc-tagline">100K events/sec Kafka backbone — exactly-once semantics, schema registry, DLQ, full OTel tracing</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Kafka</span><span class="pc-chip">Avro + SR</span><span class="pc-chip">Redis Lua</span><span class="pc-chip">OpenTelemetry</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">100K</div><div class="pc-met-label">Events/sec</div></div>
+        <div class="pc-met"><div class="pc-met-val">EOS</div><div class="pc-met-label">Exactly-Once</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;15ms</div><div class="pc-met-label">p99 Produce</div></div>
+        <div class="pc-met"><div class="pc-met-val">DLQ</div><div class="pc-met-label">Auto Recovery</div></div>
+        <div class="pc-met"><div class="pc-met-val">E2E</div><div class="pc-met-label">OTel Traces</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch"><span class="at">Producers</span> → Avro serialize → Schema Registry validate → Kafka (3 brokers, RF=3, 48 partitions)
+                │
+    ┌───────────┼───────────┐
+    ▼           ▼           ▼
+<span class="agr">Analytics</span>    <span class="agr">Features</span>    <span class="agr">Alerts</span>
+Spark         Redis HSET   FastAPI → PagerDuty
+    │  Poison pill → <span class="ar">events.dlq</span> → retry(3) → escalate
+    ▼
+<span class="ab">OTel Collector</span> → Prometheus → Grafana Tempo (trace_id in Kafka headers)</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Exactly-once semantics</strong> — Kafka transactions + idempotent consumers; chaos-tested with mid-batch kills</li>
+          <li><strong>Avro Schema Registry</strong> — BACKWARD compatibility enforced; producers blocked on mismatch</li>
+          <li><strong>Redis dedup Lua script</strong> — atomic SETNX check + write; handles consumer restarts and rebalances</li>
+          <li><strong>DLQ pipeline</strong> — failed events with error context + exponential backoff retry + human escalation</li>
+          <li><strong>E2E OpenTelemetry</strong> — trace_id in Kafka message headers, full trace in Grafana Tempo</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Rebalance storms</strong> — 30s consumer gaps on deploy; fixed with CooperativeStickyAssignor</li>
+          <li><strong>Schema v3 broke consumers</strong> — non-nullable field; enforced BACKWARD + default values</li>
+        </ul>
+        <div class="pc-errlog"><span class="er">ERROR</span> SerializationException: Schema not found events.raw-value
+  Producer sent Avro v3, Registry has v1,v2 only
+<span class="ew">WARN</span>  ConsumerGroup lag=48,200 (partition 12, 31s rebalance)
+<span class="ef">FIX</span>   CooperativeStickyAssignor + BACKWARD compatibility enforced</div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding-bottom:0">
+      <div class="pc-panel-full" style="display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap">
+        <div><div class="pc-panel-title" style="margin-bottom:8px">What It Brings</div>
+          <ul class="pc-ul" style="max-width:500px">
+            <li>Production Kafka beyond "produce/consume" — transactions, schema governance, cooperative rebalancing</li>
+            <li>DLQ + retry is the industry-standard pattern at Uber, LinkedIn, and Airbnb</li>
+          </ul>
+        </div>
+        <div><div class="pc-panel-title" style="margin-bottom:8px">Repository</div>
+          <div class="pc-badges">
+            <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits/distributed-event-platform" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+            <span class="pc-badge"><span class="dot dot-go"></span>Kafka EOS</span>
+            <span class="pc-badge"><span class="dot dot-t"></span>OTel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Anyone can write a Kafka producer. Schema governance, exactly-once, distributed tracing — that's the full operational surface of a real event platform."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 05 - Log Analytics Pipeline -->
+<div class="proj-card" data-tags="data-eng observability">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">05</div>
+    <div class="pc-meta">
+      <div class="pc-cat">Data Engineering <span class="pc-cat-dot"></span> Log Analytics <span class="pc-cat-dot"></span> ClickHouse</div>
+      <div class="pc-name">Log Analytics Pipeline</div>
+      <div class="pc-tagline">10K logs/sec ingestion → ClickHouse → sub-second OLAP queries on billions of log rows</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Kafka</span><span class="pc-chip">ClickHouse</span><span class="pc-chip">Flink</span><span class="pc-chip">Grafana</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">10K</div><div class="pc-met-label">Logs/sec</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;1s</div><div class="pc-met-label">OLAP Query</div></div>
+        <div class="pc-met"><div class="pc-met-val">B+</div><div class="pc-met-label">Row Capacity</div></div>
+        <div class="pc-met"><div class="pc-met-val">TTL</div><div class="pc-met-label">Auto Retention</div></div>
+        <div class="pc-met"><div class="pc-met-val">MV</div><div class="pc-met-label">Materialized Views</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch"><span class="at">Log Sources</span> (apps/infra) → Fluent Bit → <span class="ag">Kafka</span> (logs.raw, 24 partitions)
+    │
+    ▼ Flink stream processor
+    Parsing · Enrichment (geo-IP, service map) · Anomaly flags
+    │
+    ▼ Kafka Connect ClickHouse Sink
+<span class="ag">[ ClickHouse ]</span>  MergeTree + ORDER BY (service, level, timestamp)
+  Materialized views: error_rate_by_service · latency_buckets
+  TTL: 90d hot / 365d cold (S3 tiered storage)
+    │
+    ▼
+<span class="agr">Grafana</span> dashboards · Alert rules · Anomaly annotations</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>ClickHouse MergeTree</strong> tuned for log workloads — ORDER BY (service, level, ts) for range scan performance</li>
+          <li><strong>Materialized views</strong> — pre-computed error rates, p50/p95/p99 latency buckets; queries hit MVs not raw table</li>
+          <li><strong>Tiered TTL storage</strong> — 90 days NVMe, 365 days cold S3; automatic data movement rule</li>
+          <li><strong>Flink enrichment pipeline</strong> — GeoIP, service graph annotations, ML anomaly score injection</li>
+          <li><strong>Grafana alerting</strong> — error spike detection, latency SLA breach, cardinality explosion alerts</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>ClickHouse cardinality explosion</strong> — high-cardinality ORDER BY keys caused 10× storage bloat; restructured key order</li>
+          <li><strong>Kafka lag spikes</strong> — Flink enrichment bottleneck on GeoIP; switched to async enrichment with local MaxMind DB</li>
+        </ul>
+        <div class="pc-errlog"><span class="ew">WARN</span>  ClickHouse: granule size exceeded, 40GB vs expected 4GB
+  ORDER BY (trace_id, service) — trace_id cardinality=100M
+<span class="er">PERF</span>  Flink GeoIP latency: 45ms/record (HTTP enrichment)
+<span class="ef">FIX</span>   ORDER BY (service, level, toDate(ts)) → 4× compression
+  GeoIP: embedded MaxMind DB → 0.3ms/record</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-t"></span>ClickHouse</span>
+          <span class="pc-badge"><span class="dot dot-b"></span>Flink</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"ClickHouse is 100–1000× faster than Postgres for OLAP log queries — but only if you model it right. ORDER BY key design is everything."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ML / AI ══ -->
+<div class="cat-divider"><div class="cat-divider-label">ML / AI · 4 Projects</div></div>
+
+<!-- 04 - Fraud Detection -->
+<div class="proj-card" data-tags="ml">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">04</div>
+    <div class="pc-meta">
+      <div class="pc-cat">ML · Real-Time <span class="pc-cat-dot"></span> Explainable AI <span class="pc-cat-dot"></span> Fintech</div>
+      <div class="pc-name">Real-Time Fraud Detection</div>
+      <div class="pc-tagline">Three-layer decision system: velocity rules → ML scoring → SHAP compliance — e2e under 100ms</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">XGBoost</span><span class="pc-chip">SHAP</span><span class="pc-chip">Redis</span><span class="pc-chip">Kafka</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">96.2%</div><div class="pc-met-label">Precision @0.7</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;1ms</div><div class="pc-met-label">Velocity Rules</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;50ms</div><div class="pc-met-label">XGBoost Score</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;100ms</div><div class="pc-met-label">E2E Latency</div></div>
+        <div class="pc-met"><div class="pc-met-val">SHAP</div><div class="pc-met-label">Explainability</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture — Three-Layer Decision System</div>
+        <div class="pc-arch">POST /score → <span class="ag">Layer 1: Velocity</span> (Redis Lua, &lt;1ms) → pass/block
+               → <span class="ag">Layer 2: ML Score</span> (XGBoost + pre-fetched features, &lt;50ms) → 0.0–1.0
+               → <span class="ag">Layer 3: SHAP</span> (TreeExplainer cached, +5ms) → top-3 features
+               → Decision: APPROVE / REVIEW / BLOCK
+               → Kafka(decisions) · PostgreSQL(audit) · Prometheus(metrics)</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Three-layer latency budgeting</strong> — cheap rules first, expensive ML second, explainability last</li>
+          <li><strong>Class imbalance fix</strong> — scale_pos_weight=200 + Optuna threshold sweep → 96.2% precision, 91.4% recall</li>
+          <li><strong>SHAP compliance layer</strong> — every block decision ships top-3 feature contributions; regulation-ready</li>
+          <li><strong>Load tested 1000 RPS</strong> — p99 &lt;100ms, p99.9 &lt;180ms with SHAP enabled</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Class imbalance</strong> — default XGBoost: 99.1% precision, 12% recall; fixed with weighted training</li>
+          <li><strong>SHAP 120ms spike</strong> — TreeExplainer init per-request; fixed: pre-load at startup → 5ms/call</li>
+        </ul>
+        <div class="pc-errlog"><span class="ew">WARN</span>  Model recall=0.124 — severe imbalance (fraud &lt;0.5%)
+<span class="er">PERF</span>  SHAP explainer init per-request: 134ms
+<span class="ef">FIX</span>   scale_pos_weight=200, threshold=0.70
+  explainer cached at startup → 5ms/call</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits/7-fraud-detection" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-go"></span>96.2% Precision</span>
+          <span class="pc-badge"><span class="dot dot-r"></span>SHAP</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Three-layer latency-budgeted decision system with SHAP compliance and load-tested SLAs. This is production fintech ML — not a Kaggle notebook."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 06 - Semantic Search Engine -->
+<div class="proj-card" data-tags="ml">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">06</div>
+    <div class="pc-meta">
+      <div class="pc-cat">AI · NLP <span class="pc-cat-dot"></span> Vector Search <span class="pc-cat-dot"></span> Information Retrieval</div>
+      <div class="pc-name">Semantic Search Engine</div>
+      <div class="pc-tagline">Hybrid dense + sparse retrieval with RRF — 94% Recall@10 at sub-30ms latency</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">FAISS IVF</span><span class="pc-chip">MiniLM</span><span class="pc-chip">BM25</span><span class="pc-chip">RRF</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">94%</div><div class="pc-met-label">Recall@10</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;30ms</div><div class="pc-met-label">Query Latency</div></div>
+        <div class="pc-met"><div class="pc-met-val">RRF</div><div class="pc-met-label">Rank Fusion</div></div>
+        <div class="pc-met"><div class="pc-met-val">34%</div><div class="pc-met-label">Cache Hit Rate</div></div>
+        <div class="pc-met"><div class="pc-met-val">NDCG</div><div class="pc-met-label">Eval Harness</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture — Hybrid Retrieval</div>
+        <div class="pc-arch">Query → <span class="ag">Dense</span>: MiniLM-L6-v2 embed → FAISS IVFFlat(nprobe=16) → top-100
+       → <span class="ag">Sparse</span>: BM25(rank-bm25) → top-100
+       → <span class="ag">RRF Fusion</span>: score=Σ 1/(k=60+rank_i) → re-ranked top-K
+       → FastAPI response  encode(8ms) + FAISS(12ms) + RRF(4ms) = 24ms total
+       Redis cache: SHA256(query) → 34% hit rate</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Hybrid retrieval</strong> — dense handles semantics, BM25 handles exact terms; RRF merges results</li>
+          <li><strong>FAISS IVFFlat</strong> — nlist=256, nprobe=16; 10× faster than brute-force at &lt;2% recall loss</li>
+          <li><strong>Offline eval harness</strong> — Recall@10, MRR@10, NDCG@10 on held-out query set per experiment</li>
+          <li><strong>RRF k=60 validated</strong> — tested vs linear score combination; RRF won by 6 Recall@10 points</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Dense-only missed product codes</strong> — "SKU-4892" Recall@10=0.0; BM25 hybrid → 1.0</li>
+          <li><strong>FAISS re-index latency</strong> — 4min for 500K docs; switched to incremental flat index for new docs</li>
+        </ul>
+        <div class="pc-errlog"><span class="ew">WARN</span>  Query "SKU-4892-B" Dense Recall@10=0.0 (no semantic signal)
+  BM25 Recall@10=1.0 → Hybrid RRF Recall@10=1.0 ✓
+<span class="er">PERF</span>  FAISS full re-index: 4m12s (blocking /index)
+<span class="ef">FIX</span>   Incremental flat index for new docs + periodic rebuild</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits/3-semantic-search-engine" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-t"></span>94% Recall@10</span>
+          <span class="pc-badge"><span class="dot dot-p"></span>RRF Fusion</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Dense-only fails on exact terms. Sparse-only fails on semantics. RRF fusion gets both — and the eval data proves it."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 11 - LLM Code Review Bot -->
+<div class="proj-card" data-tags="ml">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">11</div>
+    <div class="pc-meta">
+      <div class="pc-cat">LLM <span class="pc-cat-dot"></span> AI Engineering <span class="pc-cat-dot"></span> DevOps Automation</div>
+      <div class="pc-name">LLM Code Review Bot</div>
+      <div class="pc-tagline">GitHub Actions-integrated LLM reviewer — security issues, complexity flags, style violations per PR diff</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">LLM API</span><span class="pc-chip">GitHub Actions</span><span class="pc-chip">FastAPI</span><span class="pc-chip">RAG</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">PR</div><div class="pc-met-label">Diff-Level Review</div></div>
+        <div class="pc-met"><div class="pc-met-val">RAG</div><div class="pc-met-label">Context Retrieval</div></div>
+        <div class="pc-met"><div class="pc-met-val">3-Layer</div><div class="pc-met-label">Review Depth</div></div>
+        <div class="pc-met"><div class="pc-met-val">GH</div><div class="pc-met-label">Inline Comments</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;30s</div><div class="pc-met-label">Review Time</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch">GitHub webhook → PR opened/updated
+    │
+    ▼ GitHub Actions (review.yml)
+    Fetch PR diff (github.rest.pulls.listFiles)
+    │
+    ▼ RAG Context Retrieval
+    FAISS: similar past reviews · coding style rules · team conventions
+    │
+    ▼ <span class="ag">LLM Review Chain</span>
+    System: "Senior engineer, flag: security · complexity · style · tests"
+    Prompt: diff + RAG context → structured JSON response
+    │
+    ▼ GitHub Inline Comments API
+    Post comments on specific diff lines · Summary on PR body</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Diff-level review</strong> — LLM sees only changed lines with context; not entire codebase (token efficient)</li>
+          <li><strong>RAG context retrieval</strong> — team-specific coding standards + past accepted reviews as few-shot examples</li>
+          <li><strong>Structured output parsing</strong> — JSON schema enforcement; inline comments mapped to diff hunk positions</li>
+          <li><strong>Three review layers</strong> — security (SQL injection, secrets), complexity (cyclomatic), style (conventions)</li>
+          <li><strong>Review suppression logic</strong> — skip auto-generated code, migrations, and lockfiles</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Context window overflow</strong> — large diffs exceeded LLM context; chunked by file + priority ordering</li>
+          <li><strong>False positive spam</strong> — LLM flagging every async function; added team-convention RAG context to suppress</li>
+        </ul>
+        <div class="pc-errlog"><span class="er">ERROR</span> LLM context window: 128K tokens exceeded (diff=142K tokens)
+  — Large PR with schema migration + feature code
+<span class="ew">WARN</span>  False positive rate: 34% (async patterns flagged as "missing await")
+<span class="ef">FIX</span>   Chunk by file, prioritize: security > logic > style
+  RAG: inject team async patterns as accepted examples</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-p"></span>LLM + RAG</span>
+          <span class="pc-badge"><span class="dot dot-b"></span>GitHub Actions</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"LLM-powered code review that actually respects your team's conventions. RAG-grounded, diff-level, structured output — not generic ChatGPT suggestions."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 12 - Recommendation Engine -->
+<div class="proj-card" data-tags="ml">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">12</div>
+    <div class="pc-meta">
+      <div class="pc-cat">ML · RecSys <span class="pc-cat-dot"></span> A/B Testing <span class="pc-cat-dot"></span> Experimentation</div>
+      <div class="pc-name">Recommendation Engine + A/B Testing</div>
+      <div class="pc-tagline">Hybrid collaborative + content-based filtering with a built-in A/B experimentation framework</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Matrix Factorization</span><span class="pc-chip">A/B Stats</span><span class="pc-chip">Redis</span><span class="pc-chip">FastAPI</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">+25%</div><div class="pc-met-label">New-User CTR</div></div>
+        <div class="pc-met"><div class="pc-met-val">+15%</div><div class="pc-met-label">NDCG@10</div></div>
+        <div class="pc-met"><div class="pc-met-val">A/B</div><div class="pc-met-label">Built-in Framework</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;10ms</div><div class="pc-met-label">Serve Latency</div></div>
+        <div class="pc-met"><div class="pc-met-val">Cold</div><div class="pc-met-label">Start Handled</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch"><span class="ag">User Request</span> → Feature lookup (Redis &lt;3ms) → Model routing
+    │
+    ├── <span class="at">New user</span> → Content-based (item embeddings + popularity boost)
+    └── <span class="at">Known user</span> → Matrix Factorization (ALS) scores → re-rank by recency decay
+    │
+    A/B Assignment: SHA256(user_id) mod 100 → bucket → variant model
+    │
+    <span class="agr">Response</span>: top-K items + variant_id logged to Kafka
+    <span class="agr">Analysis</span>: Bayesian A/B test (Thompson Sampling) · p-value · power calc</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Cold-start hybrid</strong> — content-based filtering for new users; ALS matrix factorization for known users</li>
+          <li><strong>Built-in A/B framework</strong> — deterministic user bucketing, Bayesian analysis, early stopping with Bonferroni correction</li>
+          <li><strong>Recency decay ranking</strong> — co-occurrence signal weighted by exponential decay (half-life=7d)</li>
+          <li><strong>Offline eval harness</strong> — Recall@K, NDCG@K, MRR tracked per model variant before A/B rollout</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>A/B assignment leakage</strong> — user bucketing changed on deploy when hash function changed; fixed with seeded consistent hash</li>
+          <li><strong>Popularity bias</strong> — ALS converged on top-20 items for all users; added diversity penalty to re-ranker</li>
+        </ul>
+        <div class="pc-errlog"><span class="ew">WARN</span>  A/B assignment changed for 12% users after v2 deploy
+  — Hash function upgrade broke determinism
+<span class="er">PERF</span>  ALS top-100: 67% overlap with global popularity list
+  — Model collapsed to popularity bias
+<span class="ef">FIX</span>   Seeded consistent hash (seed=YYYY-MM-DD)
+  Diversity penalty: MMR re-ranking (λ=0.3)</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-go"></span>+25% CTR</span>
+          <span class="pc-badge"><span class="dot dot-b"></span>A/B Framework</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"A recommender without an experimentation framework is a guessing system. A/B testing isn't a feature — it's the product."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MLOPS / INFRA ══ -->
+<div class="cat-divider"><div class="cat-divider-label">MLOps / Infrastructure · 3 Projects</div></div>
+
+<!-- 03 - Distributed Feature Store -->
+<div class="proj-card" data-tags="mlops">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">03</div>
+    <div class="pc-meta">
+      <div class="pc-cat">MLOps <span class="pc-cat-dot"></span> Feature Engineering <span class="pc-cat-dot"></span> ML Infrastructure</div>
+      <div class="pc-name">Distributed Feature Store</div>
+      <div class="pc-tagline">Dual-store with PIT joins, PSI drift detection, semantic versioning — the Uber Michelangelo pattern</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Redis Cluster</span><span class="pc-chip">Spark PIT</span><span class="pc-chip">Feast</span><span class="pc-chip">Airflow</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">&lt;5ms</div><div class="pc-met-label">Online Serve</div></div>
+        <div class="pc-met"><div class="pc-met-val">PIT</div><div class="pc-met-label">No Leakage</div></div>
+        <div class="pc-met"><div class="pc-met-val">PSI</div><div class="pc-met-label">Drift Monitor</div></div>
+        <div class="pc-met"><div class="pc-met-val">SemVer</div><div class="pc-met-label">Feature Versions</div></div>
+        <div class="pc-met"><div class="pc-met-val">2-Store</div><div class="pc-met-label">Online + Offline</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch">Kafka Events → Spark Feature Compute → <span class="ag">Feature Registry</span> (PostgreSQL metadata)
+    │
+    ┌───────┴────────┐
+    ▼                ▼
+<span class="ag">ONLINE</span> Redis          <span class="ag">OFFLINE</span> S3/Parquet
+HSET per entity       PIT join: event_ts &lt;= label_ts
+&lt;5ms p99              Prevents target leakage
+    └────────┬────────┘
+             ▼
+<span class="agr">Training</span>: clean feature matrix  <span class="agr">Serving</span>: Redis HGETALL
+<span class="ab">PSI Monitor</span> (Airflow daily): alert if PSI &gt; 0.2 → retrain trigger</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Dual-store design</strong> — same feature definitions, two materialization paths (Redis + S3)</li>
+          <li><strong>PIT-correct joins</strong> — eliminates target leakage (found 99.8% false accuracy as a bug signal)</li>
+          <li><strong>PSI drift detection</strong> — per-feature daily; PSI&gt;0.2 triggers model retraining pipeline</li>
+          <li><strong>Semantic versioning</strong> — feature_v1/v2 coexist; models pinned to versions for reproducibility</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Target leakage discovered</strong> — 99.8% validation AUC was the warning sign; naive join used post-label features</li>
+          <li><strong>Redis OOM</strong> — full numpy arrays per user hit 48GB; switched to HSET scalar fields + TTL</li>
+        </ul>
+        <div class="pc-errlog"><span class="ew">WARN</span>  Validation AUC=0.998 — suspiciously high
+  feature_computed_at &gt; label_created_at in 34% rows
+  TARGET LEAKAGE CONFIRMED
+<span class="er">ERROR</span> Redis OOM: maxmemory 48GB reached (numpy arrays)
+<span class="ef">FIX</span>   PIT join: event_ts &lt;= label_ts enforced
+  HSET scalar + TTL=86400 → 12GB usage</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits/distributed-feature-store" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-t"></span>PIT Joins</span>
+          <span class="pc-badge"><span class="dot dot-b"></span>Feast</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Target leakage is the silent model killer. 99.8% accuracy should scare you, not excite you. I built a system that makes it impossible."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 09 - AutoML Pipeline -->
+<div class="proj-card" data-tags="mlops">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">09</div>
+    <div class="pc-meta">
+      <div class="pc-cat">MLOps <span class="pc-cat-dot"></span> AutoML <span class="pc-cat-dot"></span> Pipeline Automation</div>
+      <div class="pc-name">AutoML Pipeline</div>
+      <div class="pc-tagline">End-to-end ML pipeline automation — data validation, feature selection, HPO, model selection, registry push</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Optuna</span><span class="pc-chip">MLflow</span><span class="pc-chip">Airflow</span><span class="pc-chip">scikit-learn</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">E2E</div><div class="pc-met-label">Automated Pipeline</div></div>
+        <div class="pc-met"><div class="pc-met-val">HPO</div><div class="pc-met-label">Optuna Bayesian</div></div>
+        <div class="pc-met"><div class="pc-met-val">MLflow</div><div class="pc-met-label">Experiment Track</div></div>
+        <div class="pc-met"><div class="pc-met-val">Auto</div><div class="pc-met-label">Model Selection</div></div>
+        <div class="pc-met"><div class="pc-met-val">CI</div><div class="pc-met-label">Quality Gates</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch">New Data → <span class="ag">Stage 1</span>: Schema validation · null-rate · distribution drift check
+    → <span class="ag">Stage 2</span>: Feature engineering · SHAP importance selection · correlation drop
+    → <span class="ag">Stage 3</span>: Optuna HPO (Bayesian, 100 trials, pruning via MedianPruner)
+    → <span class="ag">Stage 4</span>: Multi-model tournament (XGBoost · LightGBM · RF · LogReg)
+    → <span class="ag">Stage 5</span>: Champion selection (F1@holdout) · MLflow experiment log
+    → <span class="ag">Stage 6</span>: Quality gate (F1 &gt; baseline) → Model Registry push → serving</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Six-stage automated pipeline</strong> — from raw data to registered model with zero human intervention if quality gates pass</li>
+          <li><strong>Bayesian HPO with pruning</strong> — Optuna MedianPruner kills bad trials early; 3× faster than grid search</li>
+          <li><strong>Champion/challenger framework</strong> — new model must beat production baseline on holdout; auto-rollback on regression</li>
+          <li><strong>Full MLflow tracking</strong> — every trial logged; reproducible via run_id; artifact lineage from data version to model</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Feature selection instability</strong> — SHAP importance changed each run; fixed with bootstrap stability selection (50 subsamples)</li>
+          <li><strong>HPO overfitting to validation</strong> — 100 trials overfit the validation split; added nested CV for honest HPO estimates</li>
+        </ul>
+        <div class="pc-errlog"><span class="ew">WARN</span>  Feature set changed across 3 runs (SHAP instability)
+  run1: [f1,f2,f3] run2: [f1,f4,f5] run3: [f2,f3,f6]
+<span class="er">PERF</span>  Val F1=0.94 but Test F1=0.81 after 100 HPO trials
+  — Optimization leaked into validation split
+<span class="ef">FIX</span>   Bootstrap stability (50 sub-samples, τ=0.7 threshold)
+  Nested CV: inner 5-fold HPO, outer 5-fold eval</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-go"></span>Optuna HPO</span>
+          <span class="pc-badge"><span class="dot dot-b"></span>MLflow</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"AutoML is only trustworthy if it validates itself. Quality gates, stability selection, and nested CV make this a production-grade pipeline — not a notebook shortcut."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 13 - Observability Platform -->
+<div class="proj-card" data-tags="mlops observability">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">13</div>
+    <div class="pc-meta">
+      <div class="pc-cat">Observability <span class="pc-cat-dot"></span> OpenTelemetry <span class="pc-cat-dot"></span> Platform Engineering</div>
+      <div class="pc-name">Observability Platform</div>
+      <div class="pc-tagline">Full-stack observability: traces, metrics, logs correlated via OTel collector — SLO tracking and anomaly detection</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">OpenTelemetry</span><span class="pc-chip">Prometheus</span><span class="pc-chip">Grafana</span><span class="pc-chip">Tempo</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">3-Pillar</div><div class="pc-met-label">Traces·Metrics·Logs</div></div>
+        <div class="pc-met"><div class="pc-met-val">SLO</div><div class="pc-met-label">Error Budget</div></div>
+        <div class="pc-met"><div class="pc-met-val">MTTD</div><div class="pc-met-label">-60% Detect Time</div></div>
+        <div class="pc-met"><div class="pc-met-val">Auto</div><div class="pc-met-label">Anomaly Alerts</div></div>
+        <div class="pc-met"><div class="pc-met-val">OTel</div><div class="pc-met-label">Collector Central</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch">Services (Python/Java auto-instrumented via OTel SDK)
+    │  traces · metrics · logs all emitted with trace_id correlation
+    ▼
+<span class="ag">OTel Collector</span> — central pipeline
+  Receivers: OTLP · Prometheus scrape · Fluent Bit logs
+  Processors: batch · memory_limiter · tail_sampling
+  Exporters: Tempo · Prometheus · Loki
+    │
+    ├── <span class="agr">Grafana Tempo</span>  — distributed traces + service map
+    ├── <span class="agr">Prometheus</span>      — metrics · alerting rules · SLO burn rate
+    └── <span class="agr">Loki</span>            — logs correlated by trace_id
+    │
+<span class="ab">SLO Dashboard</span>: 99.9% availability · error budget burn rate
+<span class="ab">Anomaly Detection</span>: ARIMA baseline + 2σ spike alerts</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Unified OTel collector</strong> — single pipeline for traces, metrics, logs; trace_id as correlation key across all three signals</li>
+          <li><strong>SLO error budget tracking</strong> — 99.9% availability target; burn rate alert at 5× normal consumption</li>
+          <li><strong>Tail sampling</strong> — keep 100% of error traces, 1% of success traces; 10× storage savings</li>
+          <li><strong>ARIMA anomaly detection</strong> — baseline per-service, per-hour; 2σ deviation triggers alert with trace link</li>
+          <li><strong>MTTD reduced 60%</strong> — correlated log/trace/metric in single Grafana panel; no more context-switching between tools</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>OTel collector memory pressure</strong> — batch processor buffered too many spans; added memory_limiter processor with 80% heap limit</li>
+          <li><strong>Alert fatigue</strong> — p50 latency alerts firing on every deploy; added deployment annotations to suppress expected spikes</li>
+        </ul>
+        <div class="pc-errlog"><span class="er">ERROR</span> OTel Collector OOM: heap 2.1GB / limit 2GB
+  — Batch processor holding 800K spans in buffer
+<span class="ew">WARN</span>  Alert noise: 47 alerts/week from p50 latency during deploys
+<span class="ef">FIX</span>   memory_limiter: limit_mib=1600, spike_limit_mib=400
+  Deployment annotations in Grafana suppress expected spikes</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-t"></span>OpenTelemetry</span>
+          <span class="pc-badge"><span class="dot dot-go"></span>SLO Tracking</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Observability isn't three dashboards — it's one correlated view. trace_id as the key across logs, metrics, and traces means one click from alert to root cause."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BACKEND SYSTEMS ══ -->
+<div class="cat-divider"><div class="cat-divider-label">Backend Systems · 3 Projects</div></div>
+
+<!-- 07 - Distributed URL Shortener -->
+<div class="proj-card" data-tags="backend">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">07</div>
+    <div class="pc-meta">
+      <div class="pc-cat">Distributed Systems <span class="pc-cat-dot"></span> System Design <span class="pc-cat-dot"></span> Backend</div>
+      <div class="pc-name">Distributed URL Shortener</div>
+      <div class="pc-tagline">10M URLs/day, &lt;50ms redirect — consistent hashing, bloom filter dedup, multi-region cache</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Consistent Hashing</span><span class="pc-chip">Redis</span><span class="pc-chip">Bloom Filter</span><span class="pc-chip">PostgreSQL</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">10M</div><div class="pc-met-label">URLs/day</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;50ms</div><div class="pc-met-label">Redirect P99</div></div>
+        <div class="pc-met"><div class="pc-met-val">0%</div><div class="pc-met-label">Collision Rate</div></div>
+        <div class="pc-met"><div class="pc-met-val">7-Char</div><div class="pc-met-label">Base62 Encoding</div></div>
+        <div class="pc-met"><div class="pc-met-val">99.99%</div><div class="pc-met-label">Availability SLA</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch">POST /shorten → <span class="ag">Bloom Filter</span> (collision pre-check, 0.1% FPR) → ID Gen (Snowflake-like)
+    → Base62 encode (7-chars = 62^7 = 3.5T URLs)
+    → Write: PostgreSQL (primary) + async replication
+    → Warm: Redis cache (LRU, 1M hot URLs)
+
+GET /{slug} → <span class="agr">Redis cache hit</span> (&lt;2ms) → 301 redirect
+            → <span class="at">Cache miss</span> → PostgreSQL read → cache-aside → redirect
+    │
+<span class="ab">Consistent Hashing</span>: 3-node Redis cluster, virtual nodes=150
+  — Node failure: rehash only 1/3 of keys</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Snowflake-inspired ID generation</strong> — timestamp + worker_id + sequence; no coordination needed, naturally ordered</li>
+          <li><strong>Bloom filter pre-check</strong> — 0.1% FPR; avoids DB lookup for duplicate detection in hot path</li>
+          <li><strong>Consistent hashing</strong> — Redis cluster with 150 virtual nodes; minimizes key rehashing on node failure</li>
+          <li><strong>Cache-aside warm-up</strong> — top-1M URLs pre-loaded at startup; cold start eliminates for known hot URLs</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Hash collision in Base62</strong> — two long URLs mapped to same 7-char slug at 1B+ URLs; fixed with counter-based ID generation</li>
+          <li><strong>Redis hot key</strong> — viral URL hit 80% traffic on one Redis shard; solved with local in-process cache for top-100 URLs</li>
+        </ul>
+        <div class="pc-errlog"><span class="er">ERROR</span> UniqueViolation: slug "aB3kR9x" already exists (1 in 10M)
+  — Pure hash collision at high scale
+<span class="ew">WARN</span>  Redis shard 2: 84% CPU (viral URL hot key)
+<span class="ef">FIX</span>   Snowflake ID (no collision possible) + LFU in-process cache</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-go"></span>System Design</span>
+          <span class="pc-badge"><span class="dot dot-b"></span>Consistent Hash</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Classic system design problem, non-trivial execution. Bloom filters, consistent hashing, hot-key mitigation — this is the interview answer that actually works at scale."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 08 - Rate Limiter as a Service -->
+<div class="proj-card" data-tags="backend">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">08</div>
+    <div class="pc-meta">
+      <div class="pc-cat">Backend <span class="pc-cat-dot"></span> Redis <span class="pc-cat-dot"></span> API Gateway Patterns</div>
+      <div class="pc-name">Rate Limiter as a Service</div>
+      <div class="pc-tagline">Multi-algorithm rate limiter — Token Bucket + Sliding Window, sub-ms decisions via Redis Lua atomics</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Redis Lua</span><span class="pc-chip">Token Bucket</span><span class="pc-chip">Sliding Window</span><span class="pc-chip">FastAPI</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">&lt;1ms</div><div class="pc-met-label">Decision Latency</div></div>
+        <div class="pc-met"><div class="pc-met-val">0</div><div class="pc-met-label">Race Conditions</div></div>
+        <div class="pc-met"><div class="pc-met-val">Multi</div><div class="pc-met-label">Algorithms</div></div>
+        <div class="pc-met"><div class="pc-met-val">10K</div><div class="pc-met-label">RPS Throughput</div></div>
+        <div class="pc-met"><div class="pc-met-val">Lua</div><div class="pc-met-label">Atomic Scripts</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture — Multi-Algorithm Rate Limiter</div>
+        <div class="pc-arch">Incoming request → API Gateway middleware
+    │
+    ├── <span class="ag">Fixed Window</span>: INCR key:window · TTL · compare ≤ limit
+    ├── <span class="ag">Sliding Window</span>: ZRANGEBYSCORE(now-1s, now) count + ZADD + ZREMRANGEBYSCORE
+    └── <span class="ag">Token Bucket</span>: Lua script — atomically read tokens + refill + decrement
+    │
+    All algorithms: single Redis Lua EVAL = atomic, no TOCTOU race
+    │
+    <span class="agr">Allow</span>: pass request + Remaining-Tokens header
+    <span class="ar">Deny</span>:  429 Too Many Requests + Retry-After header</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Three algorithms</strong> — Fixed Window (simple), Sliding Window (burst-accurate), Token Bucket (smooth bursts)</li>
+          <li><strong>Lua atomicity</strong> — all check-and-update operations in single EVAL; zero race conditions under concurrent load</li>
+          <li><strong>Per-tenant configuration</strong> — rate limits stored in Redis hash per client_id; runtime updates without restart</li>
+          <li><strong>RFC-compliant headers</strong> — X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After on 429</li>
+          <li><strong>Load tested 10K concurrent RPS</strong> — zero overcounting verified via counters reconciliation post-test</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>TOCTOU race condition</strong> — GET then SET pattern had 2ms window for double-spend under load; fixed with Lua atomic script</li>
+          <li><strong>Fixed window boundary burst</strong> — 200 req/min limit allowed 400 req in 2s across window boundary; Sliding Window fixed this</li>
+        </ul>
+        <div class="pc-errlog"><span class="er">BUG</span>  Double-count at 5K RPS: GET(tokens=1) → SET(tokens=0)
+  2ms gap → two threads both see tokens=1, both allowed
+<span class="ew">WARN</span>  Fixed Window: 400 requests in 2s (200 req/min limit)
+  — Boundary burst: last 200 + first 200 of new window
+<span class="ef">FIX</span>   Lua EVAL: atomic read+decrement in single script
+  Sliding Window (ZSET per second) eliminates boundary burst</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-go"></span>Redis Lua</span>
+          <span class="pc-badge"><span class="dot dot-t"></span>10K RPS</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Rate limiting sounds simple until you find TOCTOU race conditions at 5K RPS. Lua atomics are the only correct answer. Everything else has a bug."</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 10 - Real-Time ML Feature Store (variant) -->
+<div class="proj-card" data-tags="backend mlops">
+  <div class="pc-header" onclick="toggleCard(this)">
+    <div class="pc-num">10</div>
+    <div class="pc-meta">
+      <div class="pc-cat">Backend <span class="pc-cat-dot"></span> ML Infrastructure <span class="pc-cat-dot"></span> Real-Time</div>
+      <div class="pc-name">Real-Time ML Feature Store</div>
+      <div class="pc-tagline">Streaming feature computation — Kafka → Flink → Redis, sub-100ms feature freshness for online serving</div>
+    </div>
+    <div class="pc-right">
+      <div class="pc-chips"><span class="pc-chip">Kafka</span><span class="pc-chip">Flink</span><span class="pc-chip">Redis</span><span class="pc-chip">FastAPI</span></div>
+      <button class="pc-toggle">+</button>
+    </div>
+  </div>
+  <div class="pc-body">
+    <div class="pc-inner-full" style="padding-top:2px;margin-top:2px">
+      <div class="pc-metrics">
+        <div class="pc-met"><div class="pc-met-val">&lt;100ms</div><div class="pc-met-label">Feature Freshness</div></div>
+        <div class="pc-met"><div class="pc-met-val">&lt;5ms</div><div class="pc-met-label">Serve Latency</div></div>
+        <div class="pc-met"><div class="pc-met-val">Flink</div><div class="pc-met-label">Streaming Compute</div></div>
+        <div class="pc-met"><div class="pc-met-val">Redis</div><div class="pc-met-label">Online Store</div></div>
+        <div class="pc-met"><div class="pc-met-val">TTL</div><div class="pc-met-label">Auto Expiry</div></div>
+      </div>
+    </div>
+    <div class="pc-inner-full">
+      <div class="pc-panel-full">
+        <div class="pc-panel-title">Architecture</div>
+        <div class="pc-arch">Events (Kafka) → <span class="ag">Flink Job</span>
+    Window aggregations: count_1min · sum_5min · avg_30min
+    Keyed by: user_id · session_id · entity_id
+    Watermark: event_time with 10s allowed lateness
+    │
+    ▼ Flink Redis Sink (pipelined HSET)
+<span class="ag">Redis</span> HSET user:{id} field=value · TTL=3600s
+    │
+    ▼ FastAPI serving endpoint: /features/{entity_id}
+<span class="agr">HGETALL</span> → feature dict → model inference
+    │
+<span class="ab">Freshness monitor</span>: last_updated_ts per entity · alert if stale &gt;5min</div>
+      </div>
+    </div>
+    <div class="pc-inner">
+      <div class="pc-panel">
+        <div class="pc-panel-title">What I Built</div>
+        <ul class="pc-ul">
+          <li><strong>Flink streaming aggregations</strong> — keyed by entity_id, tumbling + sliding windows, watermark handling for late events</li>
+          <li><strong>Pipelined Redis writes</strong> — batched HSET via Flink Redis Sink; 5× write throughput vs individual commands</li>
+          <li><strong>Late event handling</strong> — Flink watermark with 10s allowed lateness; late events update retroactively</li>
+          <li><strong>Feature freshness monitoring</strong> — last_updated_ts tracked per entity; stale feature alert triggers investigation</li>
+        </ul>
+      </div>
+      <div class="pc-panel">
+        <div class="pc-panel-title">Engineering Challenges &amp; Error Logs</div>
+        <ul class="pc-ul">
+          <li><strong>Out-of-order events</strong> — mobile events arriving 30s late caused window miscounts; watermark extended to 60s for mobile sources</li>
+          <li><strong>Redis memory growth</strong> — entities never expiring due to activity-based TTL reset; capped TTL to 24h regardless of activity</li>
+        </ul>
+        <div class="pc-errlog"><span class="ew">WARN</span>  Flink: 3,400 late events dropped (mobile source, 35s delay)
+  watermark=10s not sufficient for mobile
+<span class="er">ALERT</span> Redis memory 38GB growing unbounded
+  — Active entities never TTL-expired
+<span class="ef">FIX</span>   Per-source watermark: mobile=60s, server=10s
+  Max TTL cap: 86400s regardless of activity</div>
+        <div class="pc-badges" style="margin-top:14px">
+          <a class="pc-badge" href="https://github.com/gowtham27rajendran-commits" target="_blank"><span class="dot dot-g"></span>GitHub</a>
+          <span class="pc-badge"><span class="dot dot-t"></span>Flink Streaming</span>
+          <span class="pc-badge"><span class="dot dot-go"></span>&lt;100ms Freshness</span>
+        </div>
+      </div>
+    </div>
+    <div class="pc-inner-full" style="padding:0 44px;margin-bottom:2px;margin-top:2px">
+      <div class="pc-verdict"><div class="pc-verdict-l">Engineering Verdict</div><div class="pc-verdict-t">"Batch feature stores serve yesterday's truth. Streaming feature stores serve now. Flink watermarks and late-event handling are where it gets hard."</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end projects-main -->
+
+<footer>
+  <div class="footer-copy">© 2025 Gowtham Rajendran</div>
+  <div class="footer-right">13 Projects · <span class="gold">All built from scratch</span></div>
+</footer>
+
+<script>
+// Cursor
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,.pc-header').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+});
+
+// Toggle cards
+function toggleCard(header) {
+  const card = header.closest('.proj-card');
+  const isOpen = card.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.proj-card.open').forEach(c=>{
+    c.classList.remove('open');
+    c.querySelector('.pc-toggle').textContent='+';
+  });
+  if(!isOpen){
+    card.classList.add('open');
+    header.querySelector('.pc-toggle').textContent='−';
+    setTimeout(()=>{
+      card.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
+  }
+}
+
+// Filter
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    const filter=this.dataset.filter;
+    document.querySelectorAll('.proj-card').forEach(card=>{
+      if(filter==='all'){card.style.display='';return}
+      const tags=(card.dataset.tags||'').split(' ');
+      card.style.display=tags.includes(filter)?'':'none';
+    });
+    // Hide empty category dividers
+    document.querySelectorAll('.cat-divider').forEach(div=>{
+      let next=div.nextElementSibling;
+      let hasVisible=false;
+      while(next&&!next.classList.contains('cat-divider')){
+        if(next.classList.contains('proj-card')&&next.style.display!=='none')hasVisible=true;
+        next=next.nextElementSibling;
+      }
+      div.style.display=hasVisible?'':'none';
+    });
+  });
+});
+</script>
+</body>
+</html>
